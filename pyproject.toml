@@ -1,0 +1,20 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "amoni"
+authors = [{name = "The Anvilistas Team"}]
+readme = "README.md"
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: MIT License"]
+dynamic = ["version", "description"]
+dependencies = [
+    "typer"
+]
+
+[project.urls]
+Home = "https://github.com/anvilistas/amoni"
+
+[project.scripts]
+amoni = "amoni.cli.commands:amoni"
