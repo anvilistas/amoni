@@ -1,4 +1,5 @@
 import typer
+from cookiecutter.main import cookiecutter
 
 amoni = typer.Typer()
 
@@ -9,9 +10,14 @@ def main():
 
 
 @amoni.command()
-def init():
+def init(project: str = typer.Option(..., help="Project Name", prompt=True)):
     """Initialise an amoni project"""
-    typer.echo("amoni init called")
+    cookiecutter(
+        "https://github.com/anvilistas/amoni-cookiecutter.git",
+        no_input=True,
+        extra_context={"project_name": project},
+    )
+    typer.echo(f"amoni project created in {project} directory")
 
 
 @amoni.command()
