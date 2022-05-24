@@ -15,8 +15,5 @@ RUN apt-get -yyy update && apt-get -yyy install java-1.8.0-amazon-corretto-jdk g
 RUN pip install anvil-app-server
 RUN anvil-app-server || true
 
-RUN mkdir /anvil_data
-
-RUN useradd anvil
-RUN chown -R anvil:anvil /anvil_data
+RUN mkdir /anvil_data && useradd anvil && chown -R anvil:anvil /anvil_data
 USER anvil
