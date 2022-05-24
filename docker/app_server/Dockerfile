@@ -16,5 +16,5 @@ RUN pip install anvil-app-server
 RUN anvil-app-server || true
 
 RUN useradd anvil
-RUN mkdir /anvil-data && chown -R anvil:anvil /anvil_data
+RUN mkdir /anvil_data && chown -R anvil:anvil /anvil_data
 USER anvil
