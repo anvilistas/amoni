@@ -10,12 +10,17 @@ def main():
 
 
 @amoni.command()
-def init(project: str = typer.Option(..., help="Project Name", prompt=True)):
+def init(
+    project: str = typer.Option("", help="Project Name", prompt=True),
+    app_folder_name: str = typer.Option(
+        "hello_world", help="App Folder Name", prompt=True
+    ),
+):
     """Initialise an amoni project"""
     cookiecutter(
         "https://github.com/anvilistas/amoni-cookiecutter.git",
         no_input=True,
-        extra_context={"project_name": project},
+        extra_context={"project_name": project, "app_folder_name": app_folder_name},
     )
     typer.echo(f"amoni project created in {project} directory")
 
