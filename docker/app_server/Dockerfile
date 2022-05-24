@@ -12,10 +12,11 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 
 RUN apt-get -yyy update && apt-get -yyy install java-1.8.0-amazon-corretto-jdk ghostscript
 
-RUN mkdir /anvil_data
-
 RUN pip install anvil-app-server
 RUN anvil-app-server || true
 
-RUN useradd anvil && chown -R anvil:anvil /anvil_data
+RUN mkdir /anvil_data
+
+RUN useradd anvil
+RUN chown -R anvil:anvil /anvil_data
 USER anvil
