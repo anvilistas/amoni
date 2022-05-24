@@ -1,5 +1,6 @@
 import typer
 from cookiecutter.main import cookiecutter
+from python_on_whales import docker
 
 amoni = typer.Typer()
 
@@ -28,7 +29,17 @@ def init(
 @amoni.command()
 def start():
     """Start the anvil app and db servers"""
-    typer.echo("amoni start called")
+    typer.echo("Starting anvil app and database servers...")
+    docker.compose.up(["app"], detach=True)
+    typer.echo("Your app is available at http://localhost:3030")
+
+
+@amoni.command()
+def stop():
+    """Stop the anvil app and db servers"""
+    typer.echo("Stopping the anvil app and database servers...")
+    docker.compose.down()
+    typer.echo("Done")
 
 
 @amoni.command()

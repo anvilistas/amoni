@@ -11,7 +11,8 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
     "cookiecutter",
-    "typer"
+    "typer",
+    "python-on-whales",
 ]
 
 [project.urls]
