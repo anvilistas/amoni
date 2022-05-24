@@ -38,4 +38,4 @@ jobs:
           context: .
           file: docker/app_server/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/anvilistas/amoni-app-server/app:latest
+          tags: ${{ env.REGISTRY }}/anvilistas/amoni/app-server:latest
