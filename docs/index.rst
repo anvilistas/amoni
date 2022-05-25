@@ -13,9 +13,6 @@ Amoni gives you:
 * Your app available in your browser at port 3030 on your local machine
 * Your database server available on port 5432 on your local machine
 
-Why the Name?
--------------
-It's `Greek for anvil <https://translate.google.com/?sl=auto&tl=el&text=anvil&op=translate>`_ and the idea for this library was conceived on a sunny veranda on the island of Κέρκυρα (Corfu).
 
 .. toctree::
    :maxdepth: 2
@@ -23,6 +20,10 @@ It's `Greek for anvil <https://translate.google.com/?sl=auto&tl=el&text=anvil&op
    installation.rst
    getting_started.rst
    howto/index.rst
+
+Why the Name?
+-------------
+It's `Greek for anvil <https://translate.google.com/?sl=auto&tl=el&text=anvil&op=translate>`_ and the idea for this library was conceived on a sunny veranda on the island of Κέρκυρα (Corfu).
 
 * :ref:`genindex`
 * :ref:`search`
