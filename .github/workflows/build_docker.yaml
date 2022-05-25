@@ -32,10 +32,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build and push app image
+        name: Build and push app server image
         uses: docker/build-push-action@v3
         with:
           context: .
           file: docker/app_server/Dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/anvilistas/amoni/app-server:latest
+      -
+        name: Build and push test runner image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: docker/test_runner/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/anvilistas/amoni/test_runner-server:latest
