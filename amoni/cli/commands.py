@@ -45,7 +45,7 @@ def stop():
 @amoni.command()
 def log():
     """Display the anvil app server log"""
-    typer.echo("amoni log called")
+    typer.echo("log command is not yet implemented")
 
 
 @amoni.command()
@@ -57,10 +57,10 @@ def test():
 @amoni.command()
 def app(url: str):
     """Fetch the main app from anvil or some other git server"""
-    typer.echo(f"amoni app called with url {url}")
+    typer.echo("app command is not yet implemented")
 
 
 @amoni.command()
 def dependency(url: str):
     """Fetch a dependency from anvil or some other git server"""
-    typer.echo(f"amoni dependency called with url {url}")
+    typer.echo("dependency command is not yet implemented")
