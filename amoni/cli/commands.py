@@ -53,6 +53,8 @@ def log():
 @amoni.command()
 def test():
     """Run the test suite"""
+    typer.echo("Checking for newer images")
+    docker.compose.pull(["test_runner"])
     docker.compose.run("test_runner")
 
 
