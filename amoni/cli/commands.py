@@ -43,9 +43,15 @@ def stop():
 
 
 @amoni.command()
+def log():
+    """Display the anvil app server log"""
+    typer.echo("amoni log called")
+
+
+@amoni.command()
 def test():
     """Run the test suite"""
-    typer.echo("amoni test called")
+    docker.compose.run("test_runner")
 
 
 @amoni.command()
