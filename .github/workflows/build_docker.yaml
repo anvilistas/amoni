@@ -1,8 +1,10 @@
-name: Build and publish a Docker image
+name: Build and publish Docker images
 
 on:
   push:
     branches: ["main"]
+    paths:
+      - docker/**
 
 env:
   REGISTRY: ghcr.io
