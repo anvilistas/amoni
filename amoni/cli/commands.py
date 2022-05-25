@@ -25,7 +25,15 @@ def init(
         "hello_world", help="App Folder Name", prompt=True
     ),
 ):
-    """Initialise an amoni project"""
+    """Initialise an amoni project
+
+    Parameters
+    ----------
+    project
+        The name of the amoni project folder to create
+    app_folder_name
+        The name of folder within the 'app' folder which contains the app to be run
+    """
     cookiecutter(
         "https://github.com/anvilistas/amoni-cookiecutter.git",
         no_input=True,
