@@ -22,6 +22,7 @@ It's `Greek for anvil <https://translate.google.com/?sl=auto&tl=el&text=anvil&op
 
    installation.rst
    getting_started.rst
+   howto/index.rst
 
 * :ref:`genindex`
 * :ref:`search`
