@@ -1,6 +1,14 @@
+# SPDX-License-Identifier: MIT
+#
+# Copyright (c) 2021 The Amoni project team members listed at
+# https://github.com/anvilistas/amoni/graphs/contributors
+#
+# This software is published at https://github.com/anvilistas/amoni
 import typer
 from cookiecutter.main import cookiecutter
 from python_on_whales import docker
+
+__version__ = "0.0.1"
 
 amoni = typer.Typer()
 
@@ -45,26 +53,8 @@ def stop():
 
 
 @amoni.command()
-def log():
-    """Display the anvil app server log"""
-    typer.echo("log command is not yet implemented")
-
-
-@amoni.command()
 def test():
     """Run the test suite"""
     typer.echo("Checking for newer images")
     docker.compose.pull(["test_runner"])
     docker.compose.run("test_runner")
-
-
-@amoni.command()
-def app(url: str):
-    """Fetch the main app from anvil or some other git server"""
-    typer.echo("app command is not yet implemented")
-
-
-@amoni.command()
-def dependency(url: str):
-    """Fetch a dependency from anvil or some other git server"""
-    typer.echo("dependency command is not yet implemented")
