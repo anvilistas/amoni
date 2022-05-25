@@ -46,4 +46,4 @@ jobs:
           context: .
           file: docker/test_runner/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/anvilistas/amoni/test_runner-server:latest
+          tags: ${{ env.REGISTRY }}/anvilistas/amoni/test_runner:latest

@@ -29,7 +29,9 @@ def init(
 @amoni.command()
 def start():
     """Start the anvil app and db servers"""
-    typer.echo("Starting anvil app and database servers...")
+    typer.echo("Checking for newer images")
+    docker.compose.pull(["app"])
+    typer.echo("Starting anvil app and database servers")
     docker.compose.up(["app"], detach=True)
     typer.echo("Your app is available at http://localhost:3030")
 
