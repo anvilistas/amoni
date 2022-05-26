@@ -34,7 +34,8 @@ def pull_image(name: str) -> None:
 
     Parameters
     ----------
-    name : The name of the image to pull
+    name
+        The name of the image to pull
     """
     docker.compose.pull([name])
 
@@ -44,8 +45,10 @@ def start_service(name: str, detach: bool) -> None:
 
     Parameters
     ----------
-    name : The name of the service to start
-    detach : Whether to detach from the service console
+    name
+        The name of the service to start
+    detach
+        Whether to detach from the service console
     """
     docker.compose.up([name], detach=detach)
 
@@ -60,6 +63,7 @@ def run_service(name: str) -> None:
 
     Parameters
     ----------
-    name : The name of the service to start
+    name
+        The name of the service to start
     """
     docker.compose.run(name)
