@@ -1,5 +1,5 @@
 Reference
 =========
 
-.. automodule:: amoni.cli.commands
+.. automodule:: amoni.api
    :members:

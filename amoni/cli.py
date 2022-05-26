@@ -5,8 +5,8 @@
 #
 # This software is published at https://github.com/anvilistas/amoni
 import typer
-from cookiecutter.main import cookiecutter
-from python_on_whales import docker
+
+from . import api
 
 __version__ = "0.0.1"
 
@@ -25,44 +25,32 @@ def init(
         "hello_world", help="App Folder Name", prompt=True
     ),
 ):
-    """Initialise an amoni project
-
-    Parameters
-    ----------
-    project
-        The name of the amoni project folder to create
-    app_folder_name
-        The name of folder within the 'app' folder which contains the app to be run
-    """
-    cookiecutter(
-        "https://github.com/anvilistas/amoni-cookiecutter.git",
-        no_input=True,
-        extra_context={"project_name": project, "app_folder_name": app_folder_name},
-    )
+    api.init(project, app_folder_name)
     typer.echo(f"amoni project created in {project} directory")
 
 
 @amoni.command()
 def start():
     """Start the anvil app and db servers"""
+    service = "app"
     typer.echo("Checking for newer images")
-    docker.compose.pull(["app"])
+    api.pull_image(service)
     typer.echo("Starting anvil app and database servers")
-    docker.compose.up(["app"], detach=True)
+    api.start_service(service, detach=True)
     typer.echo("Your app is available at http://localhost:3030")
 
 
 @amoni.command()
 def stop():
     """Stop the anvil app and db servers"""
-    typer.echo("Stopping the anvil app and database servers...")
-    docker.compose.down()
-    typer.echo("Done")
+    typer.echo("Stopping the anvil app and database servers")
+    api.stop_services()
 
 
 @amoni.command()
 def test():
     """Run the test suite"""
     typer.echo("Checking for newer images")
-    docker.compose.pull(["test_runner"])
-    docker.compose.run("test_runner")
+    service = "test_runner"
+    api.pull_image(service)
+    api.run_service(service)

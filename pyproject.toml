@@ -19,4 +19,4 @@ dependencies = [
 Home = "https://github.com/anvilistas/amoni"
 
 [project.scripts]
-amoni = "amoni.cli.commands:amoni"
+amoni = "amoni.cli:amoni"
