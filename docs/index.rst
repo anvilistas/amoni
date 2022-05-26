@@ -40,7 +40,7 @@ So your workflow becomes:
    installation.rst
    getting_started.rst
    howto/index.rst
-   reference.rst
+   reference/index.rst
 
 Why the Name?
 -------------
