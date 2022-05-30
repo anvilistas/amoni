@@ -22,5 +22,3 @@ RUN apt-get -yyy update \
 &&  mkdir /anvil_data \
 &&  useradd anvil \
 &&  chown -R anvil:anvil /anvil_data
-
-USER anvil
