@@ -32,11 +32,11 @@ def init(
 @amoni.command()
 def start():
     """Start the anvil app and db servers"""
-    service = "app"
-    typer.echo("Checking for newer images")
-    api.pull_image(service)
+    typer.echo("Rebuilding server images")
+    api.build_image("app")
+    api.pull_image("db")
     typer.echo("Starting anvil app and database servers")
-    api.start_service(service, detach=True)
+    api.start_service("app", detach=True)
     typer.echo("Your app is available at http://localhost:3030")
 
 
@@ -52,5 +52,5 @@ def test():
     """Run the test suite"""
     typer.echo("Checking for newer images")
     service = "test_runner"
-    api.pull_image(service)
+    api.build_image(service)
     api.run_service(service)

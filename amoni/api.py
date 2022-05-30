@@ -40,6 +40,16 @@ def pull_image(name: str) -> None:
     docker.compose.pull([name])
 
 
+def build_image(name: str) -> None:
+    """Build a docker image
+    Parameters
+    ----------
+    name
+        The name of the image to pull
+    """
+    docker.compose.build([name], pull=True)
+
+
 def start_service(name: str, detach: bool) -> None:
     """Start a given service
 
