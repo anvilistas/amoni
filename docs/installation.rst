@@ -8,7 +8,7 @@ Amoni is built on top of `Docker <https://docker.com>`_ which needs to be instal
 on your local machine.
 
 As a minimum, you will need to install the `Docker Engine <https://docs.docker.com/engine/install/>`_
-and `Docker Compose <https://docs.docker.com/compose/install/>`_ on your local machine.
+and `Docker Compose <https://docs.docker.com/compose/install/>`_.
 
 If you prefer, you can install the `Docker Desktop App <https://docs.docker.com/desktop/>`_
 which also includes the Engine and Docker Compose.
