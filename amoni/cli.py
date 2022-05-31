@@ -7,6 +7,7 @@
 import typer
 
 from . import api
+from .stubs import generate_tables
 
 __version__ = "0.0.3"
 
@@ -54,3 +55,10 @@ def test():
     service = "test_runner"
     api.build_image(service)
     api.run_service(service)
+
+
+@amoni.command()
+def generate():
+    """Generate stubs for the database"""
+    msg = generate_tables()
+    typer.echo(msg)
