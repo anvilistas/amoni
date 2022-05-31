@@ -9,7 +9,7 @@ import typer
 from . import api
 from .stubs import generate_tables
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 amoni = typer.Typer()
 

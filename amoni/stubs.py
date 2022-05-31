@@ -13,7 +13,7 @@ try:
 except ImportError:
     from yaml import Loader
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 _CONFIG_FILE = Path("amoni.yaml")
 

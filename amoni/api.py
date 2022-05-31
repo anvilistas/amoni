@@ -7,7 +7,7 @@
 from cookiecutter.main import cookiecutter
 from python_on_whales import docker
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
 
