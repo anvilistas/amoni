@@ -4,7 +4,10 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+from pathlib import Path
+
 import typer
+from cookiecutter.exceptions import OutputDirExistsException
 
 from . import api
 from .stubs import generate_tables
@@ -21,13 +24,17 @@ def main():
 
 @amoni.command()
 def init(
-    project: str = typer.Option("", help="Project Name", prompt=True),
-    app_folder_name: str = typer.Option(
-        "hello_world", help="App Folder Name", prompt=True
+    directory: Path = typer.Argument(
+        ..., file_okay=False, resolve_path=True, help="Directory to initialiase"
     ),
+    app: str = typer.Argument("hello_world", help="App Folder Name"),
 ):
-    api.init(project, app_folder_name)
-    typer.echo(f"amoni project created in {project} directory")
+    try:
+        api.init(directory, app)
+        typer.echo(f"Amoni project created in {directory}\nDone! ✨ ")
+    except OutputDirExistsException:
+        msg = f"Error creating project:\n{directory} already exists"
+        typer.secho(msg, fg=typer.colors.RED)
 
 
 @amoni.command()

@@ -4,6 +4,8 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+from pathlib import Path
+
 from cookiecutter.main import cookiecutter
 from python_on_whales import docker
 
@@ -12,20 +14,21 @@ __version__ = "0.0.4"
 COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
 
 
-def init(project: str, app_folder_name: str) -> None:
+def init(directory: Path, app: str) -> None:
     """Initialise an amoni project
 
     Parameters
     ----------
-    project
-        The name of the amoni project folder to create
-    app_folder_name
+    directory
+        The full path of the amoni project folder to create
+    app
         The name of folder within the 'app' folder which contains the app to be run
     """
     cookiecutter(
         COOKIECUTTER_URL,
         no_input=True,
-        extra_context={"project_name": project, "app_folder_name": app_folder_name},
+        output_dir=directory.parent,
+        extra_context={"project_name": directory.name, "app_folder_name": app},
     )
 
 
