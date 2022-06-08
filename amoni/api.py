@@ -36,15 +36,13 @@ def init(directory: Path, app: str) -> None:
     os.chdir(directory)
     repo.index.add_all()
     repo.index.write()
-    commit_args = {
-        "ref": "HEAD",
-        "author": repo.default_signature,
-        "committer": repo.default_signature,
-        "message": "Initial commit",
-        "tree": repo.index.write_tree(),
-        "parents": [],
-    }
-    repo.create_commit(*commit_args.values())
+
+    ref = "HEAD"
+    author = committer = repo.default_signature
+    message = "Initial commit"
+    tree = repo.index.write_tree()
+    parents = []
+    repo.create_commit(ref, author, committer, message, tree, parents)
 
 
 def pull_image(name: str) -> None:
