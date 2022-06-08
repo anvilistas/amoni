@@ -10,10 +10,11 @@ license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
-    "pyyaml",
     "cookiecutter",
-    "typer",
+    "dulwich",
     "python-on-whales",
+    "pyyaml",
+    "typer",
 ]
 
 [project.urls]

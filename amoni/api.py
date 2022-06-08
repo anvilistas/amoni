@@ -4,9 +4,11 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+import os
 from pathlib import Path
 
 from cookiecutter.main import cookiecutter
+from dulwich import porcelain
 from python_on_whales import docker
 
 __version__ = "0.0.4"
@@ -30,6 +32,10 @@ def init(directory: Path, app: str) -> None:
         output_dir=directory.parent,
         extra_context={"project_name": directory.name, "app_folder_name": app},
     )
+    repo = porcelain.init(directory)
+    os.chdir(directory)
+    porcelain.add(repo)
+    porcelain.commit(repo, "Initial commit")
 
 
 def pull_image(name: str) -> None:

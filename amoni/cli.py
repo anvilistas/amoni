@@ -31,7 +31,7 @@ def init(
 ):
     try:
         api.init(directory, app)
-        typer.echo(f"Amoni project created in {directory}\nDone! ✨ ")
+        typer.echo(f"Amoni project created in {directory}\nDone! ✨")
     except OutputDirExistsException:
         msg = f"Error creating project:\n{directory} already exists"
         typer.secho(msg, fg=typer.colors.RED)
