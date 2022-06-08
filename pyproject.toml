@@ -11,7 +11,7 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 dependencies = [
     "cookiecutter",
-    "dulwich",
+    "pygit2",
     "python-on-whales",
     "pyyaml",
     "typer",

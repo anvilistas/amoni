@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 from cookiecutter.main import cookiecutter
-from dulwich import porcelain
+from pygit2 import init_repository
 from python_on_whales import docker
 
 __version__ = "0.0.4"
@@ -32,10 +32,19 @@ def init(directory: Path, app: str) -> None:
         output_dir=directory.parent,
         extra_context={"project_name": directory.name, "app_folder_name": app},
     )
-    repo = porcelain.init(directory)
+    repo = init_repository(directory)
     os.chdir(directory)
-    porcelain.add(repo)
-    porcelain.commit(repo, "Initial commit")
+    repo.index.add_all()
+    repo.index.write()
+    commit_args = {
+        "ref": "HEAD",
+        "author": repo.default_signature,
+        "committer": repo.default_signature,
+        "message": "Initial commit",
+        "tree": repo.index.write_tree(),
+        "parents": [],
+    }
+    repo.create_commit(*commit_args.values())
 
 
 def pull_image(name: str) -> None:
