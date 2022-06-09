@@ -7,8 +7,9 @@
 import os
 from pathlib import Path
 
+import keyring
+import pygit2
 from cookiecutter.main import cookiecutter
-from pygit2 import Repository, init_repository
 from python_on_whales import docker
 from yaml import dump, load
 
@@ -59,7 +60,7 @@ def init(directory: Path, app: str) -> None:
         output_dir=directory.parent,
         extra_context={"project_name": directory.name, "app_folder_name": app},
     )
-    repo = init_repository(directory)
+    repo = pygit2.init_repository(directory)
     _commit_all(repo, "Initial commit", ref="HEAD", parents=[])
 
 
@@ -113,6 +114,19 @@ def run_service(name: str) -> None:
     docker.compose.run(name)
 
 
+class AmoniRemoteCallbacks(pygit2.RemoteCallbacks):
+    def credentials(self, url, user, allowed_types):
+        if allowed_types & pygit2.credentials.GIT_CREDENTIAL_SSH_KEY:
+            credentials = {
+                key: keyring.get_password(url, key)
+                for key in ("username", "pubkey", "privkey", "passphrase")
+            }
+            if user is not None:
+                credentials["username"] = user
+            return pygit2.Keypair(**credentials)
+        return None
+
+
 def add_submodule(url: str, path: Path, name: str) -> None:
     """Add a submodule to the current repository
 
@@ -125,8 +139,8 @@ def add_submodule(url: str, path: Path, name: str) -> None:
     name
         The name of the submodule
     """
-    repo = Repository(".")
-    repo.add_submodule(url, path)
+    repo = pygit2.Repository(".")
+    repo.add_submodule(url, path, callbacks=AmoniRemoteCallbacks())
     _commit_all(repo, f"Add {name} submodule")
 
 
@@ -141,7 +155,7 @@ def set_app(name: str) -> None:
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     anvil_config["app"] = Path("/", "app", name).as_posix()
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
-    repo = Repository(".")
+    repo = pygit2.Repository(".")
     _commit_all(repo, f"Set {name} as the anvil app")
 
 
@@ -161,7 +175,7 @@ def set_dependency(id: str, name: str) -> None:
     except KeyError:
         anvil_config["dep_id"] = {id: name}
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
-    repo = Repository(".")
+    repo = pygit2.Repository(".")
     _commit_all(repo, f"Set {name} as a dependency")
 
 
