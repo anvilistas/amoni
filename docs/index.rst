@@ -12,6 +12,8 @@ Amoni gives you:
 * Convenient access to the anvil error log
 * Your app available in your browser at port 3030 on your local machine
 * Your database server available on port 5432 on your local machine
+* Commands to fetch an app from a remote repository and add it to your project either as the main app or as a dependency
+* Stub files so that your autocompleter can see the tables available in your app
 
 So your workflow becomes:
 
