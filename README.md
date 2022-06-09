@@ -17,6 +17,9 @@ server to run your app
     amoni stop
     ```
 
+* Your app available in your browser at port 3030 on your local machine
+* Your database server available on port 5432 on your local machine
+
 * A pre-configured docker container and a simple command to run your test suite:
 
     ```amoni test```
