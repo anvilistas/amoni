@@ -23,6 +23,7 @@ __version__ = "0.0.4"
 COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
 AMONI_CONFIG_FILE = Path("amoni.yaml")
 ANVIL_CONFIG_FILE = Path("app", "config.yaml")
+TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
 
 def _commit_all(
@@ -168,12 +169,11 @@ def set_dependency(id: str, name: str) -> None:
     _commit_all(repo, f"Set {name} as a dependency")
 
 
-def generate_table_stubs(target: Path) -> None:
+def generate_table_stubs(target: Path = TABLE_STUB_FILE) -> None:
     """Generate stub entries for app tables in anvil.yaml
 
     Parameters
     ----------
-    target
         The stub file where the entries should be added
     """
     amoni_config = load(AMONI_CONFIG_FILE.open(), Loader=Loader)

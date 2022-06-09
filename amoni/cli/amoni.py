@@ -75,7 +75,6 @@ def test():
 @cmd.command()
 def stubs():
     """Generate stubs for the database"""
-    stub_file = Path("anvil-stubs", "tables", "app_tables.pyi")
-    api.generate_table_stubs(stub_file)
-    typer.echo(f"Created table definitions in {stub_file}")
+    api.generate_table_stubs()
+    typer.echo(f"Created table definitions in {api.TABLE_STUB_FILE}")
     typer.echo("Done! ✨️")

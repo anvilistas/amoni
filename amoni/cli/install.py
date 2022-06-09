@@ -25,6 +25,8 @@ def app(
     typer.echo(f"Added {name} as a submodule in the app directory")
     api.set_app(name)
     typer.echo(f"Updated config to set {name} as the app")
+    api.generate_table_stubs()
+    typer.echo(f"Created table definitions in {api.TABLE_STUB_FILE}")
     typer.echo("Done! ✨️")
 
 
