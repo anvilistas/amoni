@@ -10,7 +10,6 @@ import typer
 from cookiecutter.exceptions import OutputDirExistsException
 
 from .. import api
-from ..stubs import generate_tables
 from . import install
 
 __version__ = "0.0.4"
@@ -70,7 +69,8 @@ def test():
 
 
 @cmd.command()
-def generate():
+def stubs():
     """Generate stubs for the database"""
-    msg = generate_tables()
-    typer.echo(msg)
+    stub_file = Path("anvil-stubs", "tables", "app_tables.pyi")
+    api.generate_table_stubs(stub_file)
+    typer.echo(f"Created table definitions in {stub_file}")
