@@ -113,13 +113,31 @@ def run_service(name: str) -> None:
     docker.compose.run(name)
 
 
-def add_submodule(url, path, name):
+def add_submodule(url: str, path: Path, name: str) -> None:
+    """Add a submodule to the current repository
+
+    Parameters
+    ----------
+    url
+        The url of the submodule to add
+    path
+        The directory where the submodule should be added
+    name
+        The name of the submodule
+    """
     repo = Repository(".")
     repo.add_submodule(url, path)
     _commit_all(repo, f"Add {name} submodule")
 
 
-def set_app(name: str):
+def set_app(name: str) -> None:
+    """Set the app to be run by the anvil app server
+
+    Parameters
+    ----------
+    name
+        The name of the app
+    """
     amoni_config = load(AMONI_CONFIG_FILE.open(), Loader=Loader)
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     amoni_config["app"] = name
@@ -130,7 +148,16 @@ def set_app(name: str):
     _commit_all(repo, f"Set {name} as the anvil app")
 
 
-def set_dependency(id: str, name: str):
+def set_dependency(id: str, name: str) -> None:
+    """Set an app to be a dependency
+
+    Parameters
+    ----------
+    id
+        The id of the dependency app
+    name
+        The name of the dependency app
+    """
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     try:
         anvil_config["dep_id"][id] = name
@@ -139,3 +166,22 @@ def set_dependency(id: str, name: str):
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
     repo = Repository(".")
     _commit_all(repo, f"Set {name} as a dependency")
+
+
+def generate_table_stubs(target: Path) -> None:
+    """Generate stub entries for app tables in anvil.yaml
+
+    Parameters
+    ----------
+    target
+        The stub file where the entries should be added
+    """
+    amoni_config = load(AMONI_CONFIG_FILE.open(), Loader=Loader)
+    app_config_file = Path("app", amoni_config["app"], "anvil.yaml")
+    app_config = load(app_config_file.open(), Loader=Loader)
+    tables = app_config["db_schema"].keys()
+    table_definition = [f"{t}: Table\n" for t in tables]
+    content = ["from anvil.tables import Table\n\n"] + table_definition
+    with Path(target).open("w") as f:
+        f.truncate(0)
+        f.writelines(content)
