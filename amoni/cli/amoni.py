@@ -32,10 +32,12 @@ def init(
 ):
     try:
         api.init(directory, app)
-        typer.echo(f"Amoni project created in {directory}\nDone! ✨")
+        typer.echo(f"Amoni project created in {directory}")
+        typer.echo("Done! ✨️")
     except OutputDirExistsException:
-        msg = f"Error creating project:\n{directory} already exists"
-        typer.secho(msg, fg=typer.colors.RED)
+        red = typer.colors.RED
+        typer.echo("⚠️ Error creating project:", fg=red)
+        typer.secho(f"{directory} already exists", fg=red)
 
 
 @cmd.command()
@@ -50,6 +52,7 @@ def start(
     typer.echo("Starting anvil app and database servers")
     api.start_service("app", detach=True)
     typer.echo("Your app is available at http://localhost:3030")
+    typer.echo("Done! ✨️")
 
 
 @cmd.command()
@@ -57,6 +60,7 @@ def stop():
     """Stop the anvil app and db servers"""
     typer.echo("Stopping the anvil app and database servers")
     api.stop_services()
+    typer.echo("Done! ✨️")
 
 
 @cmd.command()
@@ -74,3 +78,4 @@ def stubs():
     stub_file = Path("anvil-stubs", "tables", "app_tables.pyi")
     api.generate_table_stubs(stub_file)
     typer.echo(f"Created table definitions in {stub_file}")
+    typer.echo("Done! ✨️")
