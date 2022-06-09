@@ -19,7 +19,7 @@ server to run your app
 
 * A pre-configured docker container and a simple command to run your test suite:
 
-    amoni test```
+    ```amoni test```
 
 * Commands to fetch anvil apps and add them to your project as the main app or as
 dependencies:
