@@ -12,7 +12,7 @@ for example:
 * `Adding your key to Anvil <https://anvil.works/docs/version-control/git>`_
 
 In order for Amoni to know how to use your ssh keys to connect to a remote server (e.g.
-anvil.works), add the following to your SSH config file (possibly ~/.ssh/config):
+anvil.works), add the following to your SSH config file (possibly `~/.ssh/config`):
 
 .. code-block::
 
