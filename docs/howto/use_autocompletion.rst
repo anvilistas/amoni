@@ -21,7 +21,7 @@ feature, install the `anvil-stubs` package into your environment:
 
 Note - This package is provided by the anvilistas team and is not an official Anvil tool.
 
-Amoni will then maintain additional stub files in your project's `anvil/stubs` directory.
+Amoni will then maintain additional stub files in your project's `anvil-stubs` directory.
 Those are regenerated whenever you add an app or dependency to your project but you can
 refresh those at any time manually by running:
 
