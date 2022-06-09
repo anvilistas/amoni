@@ -21,7 +21,6 @@ except ImportError:
 __version__ = "0.0.4"
 
 COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
-AMONI_CONFIG_FILE = Path("amoni.yaml")
 ANVIL_CONFIG_FILE = Path("app", "config.yaml")
 TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
@@ -139,11 +138,8 @@ def set_app(name: str) -> None:
     name
         The name of the app
     """
-    amoni_config = load(AMONI_CONFIG_FILE.open(), Loader=Loader)
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
-    amoni_config["app"] = name
     anvil_config["app"] = Path("/", "app", name).as_posix()
-    dump(amoni_config, AMONI_CONFIG_FILE.open("w"), Dumper=Dumper)
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
     repo = Repository(".")
     _commit_all(repo, f"Set {name} as the anvil app")
@@ -169,17 +165,19 @@ def set_dependency(id: str, name: str) -> None:
     _commit_all(repo, f"Set {name} as a dependency")
 
 
-def generate_table_stubs(target: Path = TABLE_STUB_FILE) -> None:
+def generate_table_stubs(app: str, target: Path = TABLE_STUB_FILE) -> None:
     """Generate stub entries for app tables in anvil.yaml
 
     Parameters
     ----------
+    app
+        The name of the app to generate stubs for
+    target
         The stub file where the entries should be added
     """
-    amoni_config = load(AMONI_CONFIG_FILE.open(), Loader=Loader)
-    app_config_file = Path("app", amoni_config["app"], "anvil.yaml")
+    app_config_file = Path("app", app, "anvil.yaml")
     app_config = load(app_config_file.open(), Loader=Loader)
-    tables = app_config["db_schema"].keys()
+    tables = app_config["db_schema"]
     table_definition = [f"{t}: Table\n" for t in tables]
     content = ["from anvil.tables import Table\n\n"] + table_definition
     with Path(target).open("w") as f:

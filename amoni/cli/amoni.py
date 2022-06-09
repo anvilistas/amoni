@@ -33,10 +33,10 @@ def init(
     try:
         api.init(directory, app)
         typer.echo(f"Amoni project created in {directory}")
-        typer.echo("Done! ✨️")
+        typer.secho("Done! ✨️", fg=typer.colors.GREEN)
     except OutputDirExistsException:
         red = typer.colors.RED
-        typer.echo("⚠️ Error creating project:", fg=red)
+        typer.secho("⚠️ Error creating project:", fg=red)
         typer.secho(f"{directory} already exists", fg=red)
 
 
@@ -52,7 +52,7 @@ def start(
     typer.echo("Starting anvil app and database servers")
     api.start_service("app", detach=True)
     typer.echo("Your app is available at http://localhost:3030")
-    typer.echo("Done! ✨️")
+    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
 
 
 @cmd.command()
@@ -60,7 +60,7 @@ def stop():
     """Stop the anvil app and db servers"""
     typer.echo("Stopping the anvil app and database servers")
     api.stop_services()
-    typer.echo("Done! ✨️")
+    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
 
 
 @cmd.command()
@@ -73,8 +73,8 @@ def test():
 
 
 @cmd.command()
-def stubs():
+def stubs(app: str = typer.Argument(..., help="App folder name")):
     """Generate stubs for the database"""
-    api.generate_table_stubs()
+    api.generate_table_stubs(app)
     typer.echo(f"Created table definitions in {api.TABLE_STUB_FILE}")
-    typer.echo("Done! ✨️")
+    typer.secho("Done! ✨️", fg=typer.colors.GREEN)

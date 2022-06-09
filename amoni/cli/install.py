@@ -21,13 +21,14 @@ def app(
     url: str = typer.Argument(..., help="Clone URL for the Anvil app"),
     name: str = typer.Argument(..., help="Name of the Anvil app"),
 ):
+    """Fetch an anvil app and set it as the app to run"""
     api.add_submodule(url, Path("app", name), name)
     typer.echo(f"Added {name} as a submodule in the app directory")
     api.set_app(name)
     typer.echo(f"Updated config to set {name} as the app")
-    api.generate_table_stubs()
+    api.generate_table_stubs(name)
     typer.echo(f"Created table definitions in {api.TABLE_STUB_FILE}")
-    typer.echo("Done! ✨️")
+    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
 
 
 @cmd.command()
@@ -36,6 +37,8 @@ def dependency(
     name: str = typer.Argument(..., help="Name of the dependency app"),
     id: str = typer.Argument(..., help="App ID of the dependency"),
 ):
+    """Fetch an anvil app and set it as a dependency"""
     api.add_submodule(url, Path("app", name), name)
     typer.echo(f"Added {name} as a submodule in the app directory")
     api.set_dependency(id, name)
+    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
