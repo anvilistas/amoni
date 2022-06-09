@@ -31,8 +31,11 @@ author = "Amoni Project Team"
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon"]
 autodoc_mock_imports = [
     "cookiecutter",
+    "keyring",
+    "pygit2",
     "python_on_whales",
     "typer",
+    "yaml",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

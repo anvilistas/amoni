@@ -1,24 +1,24 @@
 Add Dependencies
 ----------------
 
-The 'app' directory in your project must contain a folder for the app you wish to run plus a folder for each of its dependencies.
+The `app` directory in your project must contain a folder for the app you wish to run
+plus a folder for each of its dependencies. The dependencies must also be defined in
+`app/config.yaml` in order for the app server to find them correctly.
 
-To add a dependency, first clone the relevant app to your local machine and place the resulting directory within the 'app' folder of your amoni project.
+To add a dependency to your project:
 
-Within the the 'app' directory, you should also see a file named 'config.yaml'. This file contains the settings used to start the anvil server. Open this file with your favourite text editor.
+.. code-block::
 
-At the bottom of the file, ensure there is a 'dep_id' section with an entry for each of the dependencies you need. Each entry needs to map the id of the dependency to the folder where it can be found.
+   amoni install dependency <URL to the app> <Name of the dependency> <ID of the dependency>
 
-e.g. if your app were called 'my_app' and depended upon two other apps named 'my_dependency_1' with id 'ABCDEF' and 'my_dependency_2' with id 'UVWXYZ', your file would look something like:
+If the URL you provide is at `anvil.works` (perhaps from within the Anvil IDE), you
+will need to :ref:`configure-ssh` in order for it to work. Amoni does not support
+username/password authentication.
 
-.. code-block:: yaml
+Amoni will clone the repository from the URL you provide and add it as a git submodule
+to your amoni project. The submodule will be placed in the app folder.
 
-   app: /app/hello_world
-   data-dir: /anvil_data
-   database: jdbc:postgresql://db/anvil?username=anvil&password=anvil
-   uplink-key: uplink-key
-   client-uplink-key: client-uplink-key
-   auto-migrate: true
-   dep_id:
-       ABCDEF: my_dependency_1
-       UVWXYZ: my_dependency_2
+Amoni will also change the settings in `app/config.yaml` so that the app server will
+know where to find the dependency you've just added.
+
+Finally, amoni will commit the changes you've just made to your project.
