@@ -14,7 +14,7 @@ import typer
 __version__ = "0.0.5"
 
 CLEAR_LINE = "\r\033[K"
-ANIMATION = ["⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾"]
+ANIMATION = ("⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾")
 ANIMATION_INTERVAL = 0.1
 
 
@@ -26,9 +26,8 @@ done = partial(success, "Done! ✨️")
 
 def _animate(message, event):
     while not event.is_set():
-        for char in ANIMATION:
-            out = f"{char} {message}"
-            progress(out, nl=False)
+        for frame in ANIMATION:
+            progress(f"{frame} {message}", nl=False)
             time.sleep(ANIMATION_INTERVAL)
             progress(CLEAR_LINE, nl=False)
 
