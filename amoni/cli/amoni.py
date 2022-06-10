@@ -13,7 +13,7 @@ from cookiecutter.exceptions import OutputDirExistsException
 from .. import api
 from . import echo, install
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 cmd = typer.Typer()
 cmd.add_typer(install.cmd, name="install", help="Install an anvil app or dependency")
