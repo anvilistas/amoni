@@ -37,8 +37,7 @@ def init(
         echo.progress(f"Amoni project created in {directory}")
         echo.done()
     except OutputDirExistsException:
-        echo.error("Error creating project:")
-        echo.error(f"{directory} already exists")
+        echo.error(f"Error creating project. {directory} already exists")
 
 
 @cmd.command()
