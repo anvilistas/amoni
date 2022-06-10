@@ -9,6 +9,7 @@ from pathlib import Path
 import typer
 
 from .. import api
+from . import echo
 
 __version__ = "0.0.5"
 
@@ -23,12 +24,12 @@ def app(
 ):
     """Fetch an anvil app and set it as the app to run"""
     api.add_submodule(url, Path("app", name), name)
-    typer.echo(f"Added {name} as a submodule in the app directory")
+    echo.progress(f"Added {name} as a submodule in the app directory")
     api.set_app(name)
-    typer.echo(f"Updated config to set {name} as the app")
+    echo.progress(f"Updated config to set {name} as the app")
     api.generate_table_stubs(name)
-    typer.echo(f"Created table definitions in {api.TABLE_STUB_FILE}")
-    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
+    echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
+    echo.done()
 
 
 @cmd.command()
@@ -39,6 +40,6 @@ def dependency(
 ):
     """Fetch an anvil app and set it as a dependency"""
     api.add_submodule(url, Path("app", name), name)
-    typer.echo(f"Added {name} as a submodule in the app directory")
+    echo.progress(f"Added {name} as a submodule in the app directory")
     api.set_dependency(id, name)
-    typer.secho("Done! ✨️", fg=typer.colors.GREEN)
+    echo.done()
