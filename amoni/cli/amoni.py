@@ -4,6 +4,7 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+import time
 from pathlib import Path
 
 import typer
@@ -50,11 +51,10 @@ def start(
         typer.echo("Rebuilding server images")
         api.build_image("app")
         api.pull_image("db")
-    echo.progress("Starting anvil app and database servers")
-    api.start_service("app", detach=True)
+    with echo.working("Starting anvil app and database servers"):
+        api.start_service("app", detach=True)
     echo.progress("Your app is available at http://localhost:3030")
     if launch:
-        echo.progress("Launching app")
         typer.launch("http://localhost:3030")
     echo.done()
 
@@ -62,8 +62,8 @@ def start(
 @cmd.command()
 def stop():
     """Stop the anvil app and db servers"""
-    echo.progress("Stopping the anvil app and database servers")
-    api.stop_services()
+    with echo.working("Stopping anvil app and database servers"):
+        api.stop_services()
     echo.done()
 
 
@@ -81,4 +81,11 @@ def stubs(app: str = typer.Argument(..., help="App folder name")):
     """Generate stubs for the database"""
     api.generate_table_stubs(app)
     echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
+    echo.done()
+
+
+@cmd.command()
+def working():
+    with echo.working("hello"):
+        time.sleep(3)
     echo.done()
