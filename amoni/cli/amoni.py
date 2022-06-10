@@ -82,10 +82,3 @@ def stubs(app: str = typer.Argument(..., help="App folder name")):
     api.generate_table_stubs(app)
     echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
     echo.done()
-
-
-@cmd.command()
-def working():
-    with echo.working("hello"):
-        time.sleep(3)
-    echo.done()
