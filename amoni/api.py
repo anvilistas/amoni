@@ -197,3 +197,14 @@ def generate_table_stubs(app: str, target: Path = TABLE_STUB_FILE) -> None:
     with Path(target).open("w") as f:
         f.truncate(0)
         f.writelines(content)
+
+
+def build_theme(app: str) -> None:
+    """Build the theme for the given app
+
+    Parameters
+    ----------
+    app
+        The name of the app to build the theme for
+    """
+    docker.compose.run("theme_builder", [app])
