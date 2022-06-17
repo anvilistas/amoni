@@ -5,7 +5,7 @@
 #
 # This software is published at https://github.com/anvilistas/amoni
 #
-# __version__ = "0.0.6"
+# __version__ = "0.0.7"
 FROM python:3
 
 RUN apt-get -yyy update \
