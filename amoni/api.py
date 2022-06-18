@@ -19,7 +19,7 @@ try:
 except ImportError:
     from yaml import Dumper, Loader
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 
 COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
 ANVIL_CONFIG_FILE = Path("app", "config.yaml")
