@@ -10,12 +10,12 @@ import typer
 from cookiecutter.exceptions import OutputDirExistsException
 
 from .. import api
-from . import echo, install, theme
+from . import app, echo, theme
 
 __version__ = "0.0.7"
 
 cmd = typer.Typer()
-cmd.add_typer(install.cmd, name="install", help="Install an anvil app or dependency")
+cmd.add_typer(app.cmd, name="app", help="Manage anvils apps and dependencies")
 cmd.add_typer(theme.cmd, name="theme", help="Build the theme.css for an app")
 
 

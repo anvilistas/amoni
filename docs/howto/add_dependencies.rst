@@ -9,7 +9,7 @@ To add a dependency to your project:
 
 .. code-block::
 
-   amoni install dependency <URL to the app> <Name of the dependency> <ID of the dependency>
+   amoni app add --as-dependency <URL to the app> <Name of the dependency> <ID of the dependency>
 
 If the URL you provide is at `anvil.works` (perhaps from within the Anvil IDE), you
 will need to :ref:`configure-ssh` in order for it to work. Amoni does not support

@@ -12,7 +12,7 @@ To change the default to your own anvil app:
 
 .. code-block::
 
-   amoni install app <URL to your app> <Name of your app>
+   amoni app add <URL to your app> <Name of your app>
 
 If the URL you provide is at `anvil.works` (perhaps from within the Anvil IDE), you
 will need to :ref:`configure-ssh` in order for it to work.
