@@ -6,6 +6,7 @@
 # This software is published at https://github.com/anvilistas/amoni
 import os
 from pathlib import Path
+from typing import Dict, List
 
 import keyring
 import pygit2
@@ -27,10 +28,11 @@ TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
 
 def _commit_all(
-    repo, message, ref=None, author=None, committer=None, tree=None, parents=None
+    message, repo=None, ref=None, author=None, committer=None, tree=None, parents=None
 ):
     cwd = os.getcwd()
     os.chdir(repo.path)
+    repo = repo or pygit2.Repository(".")
     repo.index.add_all()
     repo.index.write()
 
@@ -42,6 +44,16 @@ def _commit_all(
     repo.create_commit(ref, author, committer, message, tree, parents)
 
     os.chdir(cwd)
+
+
+def _get_app_config(app: str) -> Dict:
+    config_file = Path("app", app, "anvil.yaml")
+    return load(config_file.open(), Loader=Loader)
+
+
+def _save_app_config(app: str, config: Dict) -> None:
+    config_file = Path("app", app, "anvil.yaml")
+    dump(config, config_file.open("w"), Dumper=Dumper)
 
 
 def init(directory: Path, app: str) -> None:
@@ -61,7 +73,7 @@ def init(directory: Path, app: str) -> None:
         extra_context={"project_name": directory.name, "app_folder_name": app},
     )
     repo = pygit2.init_repository(directory)
-    _commit_all(repo, "Initial commit", ref="HEAD", parents=[])
+    _commit_all("Initial commit", repo=repo, ref="HEAD", parents=[])
 
 
 def pull_image(name: str) -> None:
@@ -141,7 +153,7 @@ def add_submodule(url: str, path: Path, name: str) -> None:
     """
     repo = pygit2.Repository(".")
     repo.add_submodule(url, path, callbacks=AmoniRemoteCallbacks())
-    _commit_all(repo, f"Add {name} submodule")
+    _commit_all(f"Add {name} submodule", repo=repo)
 
 
 def set_app(name: str) -> None:
@@ -155,8 +167,7 @@ def set_app(name: str) -> None:
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     anvil_config["app"] = Path("/", "app", name).as_posix()
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
-    repo = pygit2.Repository(".")
-    _commit_all(repo, f"Set {name} as the anvil app")
+    _commit_all(f"Set {name} as the anvil app")
 
 
 def set_dependency(id: str, name: str) -> None:
@@ -175,8 +186,7 @@ def set_dependency(id: str, name: str) -> None:
     except KeyError:
         anvil_config["dep_id"] = {id: name}
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
-    repo = pygit2.Repository(".")
-    _commit_all(repo, f"Set {name} as a dependency")
+    _commit_all(f"Set {name} as a dependency")
 
 
 def generate_table_stubs(app: str, target: Path = TABLE_STUB_FILE) -> None:
@@ -185,13 +195,12 @@ def generate_table_stubs(app: str, target: Path = TABLE_STUB_FILE) -> None:
     Parameters
     ----------
     app
-        The name of the app to generate stubs for
+        The name of the app
     target
         The stub file where the entries should be added
     """
-    app_config_file = Path("app", app, "anvil.yaml")
-    app_config = load(app_config_file.open(), Loader=Loader)
-    tables = app_config["db_schema"]
+    config = _get_app_config(app)
+    tables = config["db_schema"]
     table_definition = [f"{t}: Table\n" for t in tables]
     content = ["from anvil.tables import Table\n\n"] + table_definition
     with Path(target).open("w") as f:
@@ -205,6 +214,39 @@ def build_theme(app: str) -> None:
     Parameters
     ----------
     app
-        The name of the app to build the theme for
+        The name of the app
     """
     docker.compose.run("theme_builder", [app])
+
+
+def add_table(
+    app: str,
+    name: str,
+    client_permissions: str = "none",
+    server_permissions: str = "full",
+    columns: List = None,
+):
+    columns = columns if columns is None else []
+    config = _get_app_config(app)
+    table = {
+        "title": name,
+        "client": client_permissions,
+        "server": server_permissions,
+        "columns": columns,
+    }
+    try:
+        config["db_schema"][name] = table
+    except KeyError:
+        config["db_schema"] = {name: table}
+    _save_app_config(app, config)
+    _commit_all(f"Add {name} data table")
+
+
+def add_column(app: str, table: str, name: str, data_type: str, target: str = None):
+    config = _get_app_config(app)
+    column = {"name": name, "admin_ui": {"width": 200}, "type": data_type}
+    if not target:
+        column["target"] = target
+    config["db_schema"][table]["columns"].append(column)
+    _save_app_config(app, config)
+    _commit_all(f"Add {name} column to {table} data table")
