@@ -9,7 +9,7 @@ import typer
 from .. import api
 from . import echo
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 
 
 cmd = typer.Typer()
