@@ -39,6 +39,7 @@ def add(
     else:
         api.set_app(name)
         echo.progress(f"Updated config to set {name} as the app")
-        api.generate_table_stubs(name)
-        echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
+        generated_stubs = api.generate_table_stubs(name)
+        if generated_stubs:
+            echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
     echo.done()

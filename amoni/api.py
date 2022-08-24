@@ -200,12 +200,16 @@ def generate_table_stubs(app: str, target: Path = TABLE_STUB_FILE) -> None:
         The stub file where the entries should be added
     """
     config = _get_app_config(app)
-    tables = config["db_schema"]
+    try:
+        tables = config["db_schema"]
+    except KeyError:
+        return False
     table_definition = [f"{t}: Table\n" for t in tables]
     content = ["from anvil.tables import Table\n\n"] + table_definition
     with Path(target).open("w") as f:
         f.truncate(0)
         f.writelines(content)
+    return True
 
 
 def build_theme(app: str) -> None:
