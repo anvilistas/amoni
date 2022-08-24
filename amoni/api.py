@@ -182,9 +182,9 @@ def set_dependency(id: str, name: str) -> None:
     """
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     try:
-        anvil_config["dep_id"][id] = name
+        anvil_config["dep-id"][id] = name
     except KeyError:
-        anvil_config["dep_id"] = {id: name}
+        anvil_config["dep-id"] = {id: name}
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
     _commit_all(f"Set {name} as a dependency")
 
