@@ -5,6 +5,7 @@ on:
     branches: ["main"]
     paths:
       - docker/**
+      - .github/workflows/build_docker.yaml
 
 env:
   REGISTRY: ghcr.io
@@ -40,6 +41,7 @@ jobs:
           context: .
           file: docker/app_server/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ env.REGISTRY }}/anvilistas/amoni/app-server:latest
       -
         name: Build and push test runner image
