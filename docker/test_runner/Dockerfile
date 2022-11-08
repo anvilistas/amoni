@@ -5,7 +5,7 @@
 #
 # This software is published at https://github.com/anvilistas/amoni
 #
-# __version__ = "0.0.10"
+# __version__ = "0.0.11"
 FROM python:3
 
 COPY docker/test_runner/requirements.txt ./
