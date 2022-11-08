@@ -31,8 +31,8 @@ def _commit_all(
     message, repo=None, ref=None, author=None, committer=None, tree=None, parents=None
 ):
     cwd = os.getcwd()
-    os.chdir(repo.path)
     repo = repo or pygit2.Repository(".")
+    os.chdir(repo.path)
     repo.index.add_all()
     repo.index.write()
 
