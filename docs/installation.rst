@@ -26,3 +26,14 @@ If you prefer, you can install amoni into any Python environment using:
 .. code-block:: shell
 
    python -m pip install amoni
+
+User Permissions
+----------------
+Make sure you add your user to the docker group. This is how you do it on Ubuntu 22.04, I imagine other distros to be silimar :
+
+.. code-block:: shell
+
+   sudo usermod -aG docker $USER
+   newgrp docker
+   
+If you don't do this, you may get socket permission errors when you run "amoni start".
