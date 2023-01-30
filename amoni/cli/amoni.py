@@ -12,7 +12,7 @@ from cookiecutter.exceptions import OutputDirExistsException
 from .. import api
 from . import app, echo, theme
 
-__version__ = "0.0.11"
+__version__ = "0.0.12"
 
 cmd = typer.Typer()
 cmd.add_typer(app.cmd, name="app", help="Manage anvils apps and dependencies")
