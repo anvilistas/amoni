@@ -11,7 +11,7 @@ from threading import Event, Thread
 
 import typer
 
-__version__ = "0.0.12"
+__version__ = "0.0.13"
 
 CLEAR_LINE = "\r\033[K"
 EMOJI_ANIMATION = {"frames": ("⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾"), "interval": 0.1}
