@@ -115,7 +115,7 @@ def stop_services() -> None:
     docker.compose.down()
 
 
-def run_service(name: str) -> None:
+def run_service(name: str, remove: bool = True) -> None:
     """Run a given service
 
     Parameters
@@ -123,7 +123,7 @@ def run_service(name: str) -> None:
     name
         The name of the service to start
     """
-    docker.compose.run(name)
+    docker.compose.run(name, remove=remove)
 
 
 class AmoniRemoteCallbacks(pygit2.RemoteCallbacks):
