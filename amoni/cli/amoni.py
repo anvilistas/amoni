@@ -67,11 +67,14 @@ def stop():
 
 
 @cmd.command()
-def test():
+def test(
+    update: bool = typer.Option(False, help="Whether to update the docker image"),
+):
     """Run the test suite"""
     echo.progress("Checking for newer images")
     service = "test_runner"
-    api.build_image(service)
+    if update:
+        api.build_image(service)
     api.run_service(service)
 
 
