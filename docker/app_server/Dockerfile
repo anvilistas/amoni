@@ -7,6 +7,7 @@
 #
 # __version__ = "0.0.13"
 FROM python:3
+COPY requirements.txt ./ 
 
 RUN apt-get -yyy update \
 &&  apt-get -yyy install software-properties-common postgresql-client \
@@ -17,7 +18,7 @@ RUN apt-get -yyy update \
 &&  rm google-chrome-stable_current_amd64.deb \
 &&  apt-get -yyy update \
 &&  apt-get -yyy install java-1.8.0-amazon-corretto-jdk ghostscript \
-&&  pip install anvil-app-server \
+&&  pip install -r requirements.txt \
 &&  anvil-app-server || true \
 &&  mkdir /anvil_data \
 &&  useradd anvil \
