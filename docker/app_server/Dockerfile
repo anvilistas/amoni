@@ -7,7 +7,7 @@
 #
 # __version__ = "0.0.13"
 FROM python:3
-COPY docker/app-server/requirements.txt ./ 
+COPY docker/app_server/requirements.txt ./ 
 
 RUN apt-get -yyy update \
 &&  apt-get -yyy install software-properties-common postgresql-client \
