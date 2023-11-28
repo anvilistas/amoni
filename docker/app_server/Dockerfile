@@ -13,11 +13,11 @@ RUN apt-get -yyy update \
 &&  apt-get -yyy install software-properties-common postgresql-client \
 && wget -O - https://apt.corretto.aws/corretto.key | sudo gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg \
 && echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list \
+&&  apt-get -yyy update \
+&&  apt-get -yyy install java-1.8.0-amazon-corretto-jdk ghostscript \
 &&  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
 &&  dpkg -i google-chrome-stable_current_amd64.deb || apt install -y --fix-broken \
 &&  rm google-chrome-stable_current_amd64.deb \
-&&  apt-get -yyy update \
-&&  apt-get -yyy install java-1.8.0-amazon-corretto-jdk ghostscript \
 &&  pip install -r requirements.txt \
 &&  anvil-app-server || true \
 &&  mkdir /anvil_data \
