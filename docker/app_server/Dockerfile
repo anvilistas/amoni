@@ -14,6 +14,8 @@ RUN apt-get -yyy update \
 &&  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
 &&  dpkg -i google-chrome-stable_current_amd64.deb || apt install -y --fix-broken \
 &&  rm google-chrome-stable_current_amd64.deb \
+&&  pip install --upgrade pip \
+&&  pip install anvil-app-server \
 &&  pip install -r requirements.txt \
 &&  anvil-app-server || true \
 &&  mkdir /anvil_data \
