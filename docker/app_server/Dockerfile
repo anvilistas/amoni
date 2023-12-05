@@ -2,16 +2,17 @@
 #
 # Copyright (c) 2021 The Amoni project team members listed at
 # https://github.com/anvilistas/amoni/graphs/contributors
-#
-# This software is published at https://github.com/anvilistas/amoni
-FROM python:3.11-slim-bookworm
-COPY docker/app_server/requirements.txt ./ 
+FROM python:3.11-slim-bookworm AS builder
+COPY docker/app_server/requirements.txt .
+RUN apt-get update && apt-get install -y --no-install-recommends gcc python3-dev software-properties-common \
+&&  python -m venv /opt/venv \
+&&  /opt/venv/bin/pip install --upgrade pip \
+&&  /opt/venv/bin/pip install --extra-index-url=https://www.piwheels.org/simple -r requirements.txt \
+&&  /opt/venv/bin/anvil-app-server || true
 
-RUN apt-get -yyy update && apt-get -yyy install gcc python3-dev software-properties-common postgresql-client openjdk-17-jdk \
-&&  pip install --upgrade pip \
-&&  mkdir /anvil-data \
-&&  useradd anvil \
-&&  chown -R anvil:anvil /anvil-data
-
-RUN pip install --extra-index-url=https://www.piwheels.org/simple -r requirements.txt \
-&&  anvil-app-server || true
+FROM alpine:latest
+ENV PATH="/opt/venv/bin:$PATH"
+RUN apk update \
+&&  apk add --no-cache postgresql-client openjdk8 \
+&&  adduser -D anvil && mkdir /anvil-data && chown -R anvil:anvil /anvil-data
+COPY --from=builder /opt/venv /opt/venv
