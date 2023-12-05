@@ -29,7 +29,7 @@ COPY docker/app_server/requirements.txt ./
 RUN apt-get -yyy update && apt-get -yyy install software-properties-common postgresql-client openjdk-17-jdk
 
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --extra-index-url=https://www.piwheels.org/simple -r requirements.txt
 RUN anvil-app-server || true
 
 RUN mkdir /anvil-data
