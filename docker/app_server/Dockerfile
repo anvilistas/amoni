@@ -26,15 +26,11 @@
 FROM python:3.11-slim-bookworm
 COPY docker/app_server/requirements.txt ./ 
 
-RUN apt-get -yyy update && apt-get -yyy install gcc python3-dev software-properties-common postgresql-client openjdk-17-jdk
+RUN apt-get -yyy update && apt-get -yyy install gcc python3-dev software-properties-common postgresql-client openjdk-17-jdk \
+&&  pip install --upgrade pip \
+&&  RUN mkdir /anvil-data \
+&&  RUN useradd anvil \
+&&  RUN chown -R anvil:anvil /anvil-data
 
-RUN pip install --upgrade pip
-RUN pip install --extra-index-url=https://www.piwheels.org/simple -r requirements.txt
-RUN anvil-app-server || true
-
-RUN mkdir /anvil-data
-
-RUN useradd anvil
-RUN chown -R anvil:anvil /anvil-data
-USER anvil
-
+RUN pip install --extra-index-url=https://www.piwheels.org/simple -r requirements.txt \
+&&  anvil-app-server || true
