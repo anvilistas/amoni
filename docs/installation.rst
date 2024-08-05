@@ -35,5 +35,5 @@ Make sure you add your user to the docker group. For example, on Linux:
 
    sudo usermod -aG docker $USER
    newgrp docker
-   
+
 If you don't do this, you may get socket permission errors when you run "amoni start".
