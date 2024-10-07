@@ -1,13 +1,13 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v5.0.0
     hooks:
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
 
   - repo: https://github.com/psf/black
-    rev: 22.3.0 # Replace by any tag/version: https://github.com/psf/black/tags
+    rev: 24.10.0 # Replace by any tag/version: https://github.com/psf/black/tags
     hooks:
       - id: black
         args: # arguments to configure black
@@ -16,14 +16,14 @@ repos:
 
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.13.2
     hooks:
       - id: isort
         name: isort (python)
 
   # flake8
   - repo: https://github.com/PyCQA/flake8
-    rev: 4.0.1
+    rev: 7.1.1
     hooks:
       - id: flake8
         args: # arguments to configure flake8
@@ -35,7 +35,7 @@ repos:
           - "--ignore=E203,E266,E501,W503,F403,F401,E402,F811"
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.1.13
+    rev: v1.5.5
     hooks:
         - id: insert-license
           files: "^.*py$"
