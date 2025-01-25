@@ -4,6 +4,7 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+import time
 from pathlib import Path
 
 import typer
@@ -50,15 +51,31 @@ def start(
         typer.echo("Rebuilding server images")
         api.build_image("app")
         api.pull_image("db")
-    with echo.working("Starting anvil app and database servers"):
-        api.start_service("app", detach=True)
-    # Get latest port values in case .env was modified
-    current_app_port, current_db_port = api.get_ports()
-    echo.progress(f"Your app is available at http://localhost:{current_app_port}")
-    echo.progress(f"PostgreSQL database is available at localhost:{current_db_port}")
-    if launch:
-        typer.launch(f"http://localhost:{current_app_port}")
-    echo.done()
+    try:
+        # Get configuration before starting services to fail fast if .env is missing
+        current_app_port, current_db_port, origin_url = api.get_ports()
+
+        with echo.working("Starting anvil app and database servers"):
+            api.start_service("app", detach=True)
+
+        echo.progress(f"Your app is available at {origin_url}!")
+        echo.progress(
+            f"PostgreSQL database is available at localhost:{current_db_port}!"
+        )
+        if launch:
+            echo.progress("Waiting for services to be ready...")
+            time.sleep(2)  # Wait for 2 seconds before launching browser
+            try:
+                typer.launch(origin_url)
+            except Exception:
+                # Browser launch failed (e.g., no graphical interface)
+                echo.progress(
+                    "Browser launch failed - you can manually open the URL in your browser"
+                )
+        echo.done()
+    except RuntimeError as e:
+        echo.error(str(e))
+        raise typer.Exit(1)
 
 
 @cmd.command()

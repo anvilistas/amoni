@@ -30,20 +30,38 @@ ANVIL_CONFIG_FILE = Path("app", "config.yaml")
 TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
 
-def get_ports() -> Tuple[str, str]:
-    """Get the configured ports for app and database servers
+def get_ports() -> Tuple[str, str, str]:
+    """Get the configured ports and origin URL for app and database servers
 
     Returns
     -------
-    Tuple[str, str]
-        A tuple containing (app_port, db_port)
-    """
-    # Load environment variables from .env file
-    load_dotenv()
+    Tuple[str, str, str]
+        A tuple containing (app_port, db_port, origin_url)
 
-    app_port = os.environ.get("AMONI_APP_PORT", "3030")
-    db_port = os.environ.get("AMONI_DB_PORT", "5432")
-    return app_port, db_port
+    Raises
+    ------
+    RuntimeError
+        If .env file is not found or required environment variables are missing
+    """
+    # Look for .env in current directory
+    if not load_dotenv(dotenv_path=".env"):
+        raise RuntimeError(
+            "No .env file found. Please create one with required environment variables."
+        )
+
+    app_port = os.environ.get("AMONI_APP_PORT")
+    if not app_port:
+        raise RuntimeError("AMONI_APP_PORT not found in .env file")
+
+    db_port = os.environ.get("AMONI_DB_PORT")
+    if not db_port:
+        raise RuntimeError("AMONI_DB_PORT not found in .env file")
+
+    origin_url = os.environ.get("ORIGIN_URL")
+    if not origin_url:
+        raise RuntimeError("ORIGIN_URL not found in .env file")
+
+    return app_port, db_port, origin_url
 
 
 def _commit_all(
