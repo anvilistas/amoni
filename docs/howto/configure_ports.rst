@@ -83,7 +83,7 @@ Using with Cloudflare Tunnels
 When using Cloudflare Tunnels to expose your app to the internet:
 
 1. Set ``disable-tls: true`` in your ``config.yaml``:
-   
+
    .. code-block:: yaml
 
        disable-tls: true  # Required for Cloudflare Tunnel

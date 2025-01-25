@@ -22,7 +22,9 @@ except ImportError:
 
 __version__ = "0.0.13"
 
-COOKIECUTTER_URL = "https://github.com/anvilistas/amoni-cookiecutter.git"
+COOKIECUTTER_URL = os.environ.get(
+    "AMONI_COOKIECUTTER_PATH", "https://github.com/anvilistas/amoni-cookiecutter.git"
+)
 ANVIL_CONFIG_FILE = Path("app", "config.yaml")
 TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
