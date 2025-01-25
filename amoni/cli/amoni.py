@@ -12,6 +12,9 @@ from cookiecutter.exceptions import OutputDirExistsException
 from .. import api
 from . import app, echo, theme
 
+# Get configured ports
+app_port, db_port = api.get_ports()
+
 __version__ = "0.0.13"
 
 cmd = typer.Typer()
@@ -52,9 +55,10 @@ def start(
         api.pull_image("db")
     with echo.working("Starting anvil app and database servers"):
         api.start_service("app", detach=True)
-    echo.progress("Your app is available at http://localhost:3030")
+    echo.progress(f"Your app is available at http://localhost:{app_port}")
+    echo.progress(f"Database is available at localhost:{db_port}")
     if launch:
-        typer.launch("http://localhost:3030")
+        typer.launch(f"http://localhost:{app_port}")
     echo.done()
 
 

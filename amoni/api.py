@@ -6,7 +6,21 @@
 # This software is published at https://github.com/anvilistas/amoni
 import os
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
+
+
+def get_ports() -> Tuple[str, str]:
+    """Get the configured ports for app and database servers
+
+    Returns
+    -------
+    Tuple[str, str]
+        A tuple containing (app_port, db_port)
+    """
+    app_port = os.environ.get("AMONI_APP_PORT", "3030")
+    db_port = os.environ.get("AMONI_DB_PORT", "5432")
+    return app_port, db_port
+
 
 import keyring
 import pygit2
