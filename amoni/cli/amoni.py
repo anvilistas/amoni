@@ -12,9 +12,6 @@ from cookiecutter.exceptions import OutputDirExistsException
 from .. import api
 from . import app, echo, theme
 
-# Initialize environment variables and get configured ports
-app_port, db_port = api.get_ports()
-
 __version__ = "0.0.13"
 
 cmd = typer.Typer()
