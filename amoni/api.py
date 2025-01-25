@@ -145,19 +145,28 @@ def start_service(name: str, detach: bool) -> None:
     detach
         Whether to detach from the service console
     """
-    cmd = ["docker-compose", "up"]
-    if detach:
-        cmd.append("-d")
-    cmd.append(name)
     try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        raise RuntimeError(f"Failed to start service: {e}")
+        docker.compose.up([name], detach=detach)
+    except Exception:
+        cmd = ["docker-compose", "up"]
+        if detach:
+            cmd.append("-d")
+        cmd.append(name)
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to start service: {e}")
 
 
 def stop_services() -> None:
     """Stop all amoni services"""
-    docker.compose.down()
+    try:
+        docker.compose.down()
+    except Exception:
+        try:
+            subprocess.run(["docker-compose", "down"], check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to stop services: {e}")
 
 
 def run_service(name: str, remove: bool = True) -> None:
