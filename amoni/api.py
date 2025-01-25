@@ -5,6 +5,7 @@
 #
 # This software is published at https://github.com/anvilistas/amoni
 import os
+import subprocess
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -144,7 +145,14 @@ def start_service(name: str, detach: bool) -> None:
     detach
         Whether to detach from the service console
     """
-    docker.compose.up([name], detach=detach)
+    cmd = ["docker-compose", "up"]
+    if detach:
+        cmd.append("-d")
+    cmd.append(name)
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(f"Failed to start service: {e}")
 
 
 def stop_services() -> None:
