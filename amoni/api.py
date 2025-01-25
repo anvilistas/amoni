@@ -8,23 +8,10 @@ import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-
-def get_ports() -> Tuple[str, str]:
-    """Get the configured ports for app and database servers
-
-    Returns
-    -------
-    Tuple[str, str]
-        A tuple containing (app_port, db_port)
-    """
-    app_port = os.environ.get("AMONI_APP_PORT", "3030")
-    db_port = os.environ.get("AMONI_DB_PORT", "5432")
-    return app_port, db_port
-
-
 import keyring
 import pygit2
 from cookiecutter.main import cookiecutter
+from dotenv import load_dotenv
 from python_on_whales import docker
 from yaml import dump, load
 
@@ -41,6 +28,22 @@ COOKIECUTTER_URL = os.environ.get(
 )
 ANVIL_CONFIG_FILE = Path("app", "config.yaml")
 TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
+
+
+def get_ports() -> Tuple[str, str]:
+    """Get the configured ports for app and database servers
+
+    Returns
+    -------
+    Tuple[str, str]
+        A tuple containing (app_port, db_port)
+    """
+    # Load environment variables from .env file
+    load_dotenv()
+
+    app_port = os.environ.get("AMONI_APP_PORT", "3030")
+    db_port = os.environ.get("AMONI_DB_PORT", "5432")
+    return app_port, db_port
 
 
 def _commit_all(
@@ -246,7 +249,7 @@ def add_table(
     server_permissions: str = "full",
     columns: List = None,
 ):
-    columns = columns if columns is None else []
+    columns = columns if columns is not None else []
     config = _get_app_config(app)
     table = {
         "title": name,

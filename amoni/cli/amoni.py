@@ -12,7 +12,7 @@ from cookiecutter.exceptions import OutputDirExistsException
 from .. import api
 from . import app, echo, theme
 
-# Get configured ports
+# Initialize environment variables and get configured ports
 app_port, db_port = api.get_ports()
 
 __version__ = "0.0.13"
@@ -55,10 +55,12 @@ def start(
         api.pull_image("db")
     with echo.working("Starting anvil app and database servers"):
         api.start_service("app", detach=True)
-    echo.progress(f"Your app is available at http://localhost:{app_port}")
-    echo.progress(f"Database is available at localhost:{db_port}")
+    # Get latest port values in case .env was modified
+    current_app_port, current_db_port = api.get_ports()
+    echo.progress(f"Your app is available at http://localhost:{current_app_port}")
+    echo.progress(f"PostgreSQL database is available at localhost:{current_db_port}")
     if launch:
-        typer.launch(f"http://localhost:{app_port}")
+        typer.launch(f"http://localhost:{current_app_port}")
     echo.done()
 
 
