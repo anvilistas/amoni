@@ -371,3 +371,35 @@ def add_column(app: str, table: str, name: str, data_type: str, target: str = No
     config["db_schema"][table]["columns"].append(column)
     _save_app_config(app, config)
     _commit_all(f"Add {name} column to {table} data table")
+
+
+def checkout_version(app: str, version: str = None) -> None:
+    """Checkout a specific version (tag or branch) of a submodule
+
+    Parameters
+    ----------
+    app : str
+        The name of the app (submodule)
+    version : str, optional
+        The version (tag or branch) to checkout. If not provided,
+        stays on default branch.
+    """
+    if not version:
+        return
+
+    repo = pygit2.Repository(str(Path("app", app)))
+
+    # Try tag first
+    try:
+        tag_ref = repo.lookup_reference(f"refs/tags/{version}")
+        repo.checkout(tag_ref)
+        return
+    except KeyError:
+        pass
+
+    # Try branch
+    try:
+        branch_ref = repo.lookup_reference(f"refs/remotes/origin/{version}")
+        repo.checkout(branch_ref)
+    except KeyError:
+        raise RuntimeError(f"Version '{version}' not found as tag or branch in {app}")

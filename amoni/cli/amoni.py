@@ -31,11 +31,21 @@ def init(
         ..., file_okay=False, resolve_path=True, help="Directory to initialiase"
     ),
     app: str = typer.Argument("hello_world", help="App Folder Name"),
+    interactive: bool = typer.Option(
+        False,
+        "--interactive",
+        "-i",
+        help="Use interactive setup mode that guides you through configuration",
+    ),
 ):
     """Create the amoni folder structure and initialise a git repo there"""
     try:
         api.init(directory, app)
         echo.progress(f"Amoni project created in {directory}")
+
+        if interactive:
+            _interactive_setup(directory)
+
         echo.done()
     except OutputDirExistsException:
         echo.error(f"Error creating project. {directory} already exists")
@@ -96,6 +106,78 @@ def test(
     if update:
         api.build_image(service)
     api.run_service(service)
+
+
+def _interactive_setup(directory: Path):
+    """Handle the interactive setup process after project initialization.
+
+    Parameters
+    ----------
+    directory : Path
+        The project directory where setup is being performed
+    """
+    # Get main app details
+    repo_url = typer.prompt("Enter the repository URL for your main app")
+    repo_name = typer.prompt("Enter the name for your main app")
+
+    # Add main app
+    app.add(repo_url, repo_name)
+
+    # Parse dependencies from main app's anvil.yaml
+    app_config = api._get_app_config(repo_name)
+    deps = app_config.get("dependencies", [])
+
+    # Get dependency details
+    for dep in deps:
+        dep_id = dep["dep_id"]
+        package_name = dep["resolution_hints"]["package_name"]
+        dep_url = typer.prompt(
+            f"Enter repository URL for dependency {package_name} ({dep_id})"
+        )
+        app.add(dep_url, package_name, id=dep_id, as_dependency=True, set_version=True)
+
+    # Get port configurations
+    app_port = typer.prompt("Enter port number for the app server", default="3030")
+    db_port = typer.prompt("Enter port number for the database", default="5432")
+    origin_url = typer.prompt(
+        "Enter origin URL", default=f"http://localhost:{app_port}"
+    )
+
+    # Update .env file with configurations
+    env_path = directory / ".env"
+    if env_path.exists():
+        with open(env_path) as f:
+            env_content = f.read()
+
+        # Replace or add each variable
+        for var, value in [
+            ("AMONI_APP_PORT", app_port),
+            ("AMONI_DB_PORT", db_port),
+            ("ORIGIN_URL", origin_url),
+        ]:
+            # Check if variable exists
+            if f"{var}=" in env_content:
+                # Replace existing value
+                env_content = (
+                    env_content.replace(f"{var}=", f"{var}={value}\n").rstrip() + "\n"
+                )
+            else:
+                # Add new variable
+                env_content += f"{var}={value}\n"
+    else:
+        # Create new .env file if it doesn't exist
+        env_content = f"""AMONI_APP_PORT={app_port}
+AMONI_DB_PORT={db_port}
+ORIGIN_URL={origin_url}
+"""
+
+    with open(env_path, "w") as f:
+        f.write(env_content)
+
+    # Commit changes
+    api._commit_all("Update project configuration")
+
+    echo.progress("Interactive setup completed successfully")
 
 
 @cmd.command()

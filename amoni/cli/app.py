@@ -26,6 +26,10 @@ def add(
         False,
         help="Whether to add the app as a dependency",
     ),
+    set_version: bool = typer.Option(
+        False,
+        help="Whether to set version from main app's anvil.yaml",
+    ),
 ):
     """Fetch an anvil app and set it as the app to run"""
     if as_dependency and not id:
@@ -34,8 +38,30 @@ def add(
         )
     api.add_submodule(url, Path("app", name), name)
     echo.progress(f"Added {name} as a submodule in the app directory")
+
     if as_dependency:
         api.set_dependency(id, name)
+
+        if set_version:
+            # Get main app name from config
+            anvil_config = api.load(api.ANVIL_CONFIG_FILE.open(), Loader=api.Loader)
+            main_app = Path(anvil_config["app"]).name
+
+            # Get main app's anvil.yaml
+            app_config = api._get_app_config(main_app)
+            deps = app_config.get("dependencies", [])
+
+            # Find this dependency's version info
+            for dep in deps:
+                if dep["dep_id"] == id:
+                    version_info = dep.get("version", {})
+                    version = version_info.get("version_tag") or version_info.get(
+                        "version_branch"
+                    )
+                    if version:
+                        api.checkout_version(name, version)
+                        echo.progress(f"Checked out version {version} for {name}")
+                    break
     else:
         api.set_app(name)
         echo.progress(f"Updated config to set {name} as the app")
