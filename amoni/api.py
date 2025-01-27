@@ -13,7 +13,6 @@ import keyring
 import pygit2
 from cookiecutter.main import cookiecutter
 from dotenv import load_dotenv
-from python_on_whales import docker
 from yaml import dump, load
 
 try:
@@ -38,29 +37,17 @@ def get_ports() -> Tuple[str, str, str]:
     -------
     Tuple[str, str, str]
         A tuple containing (app_port, db_port, origin_url)
-
-    Raises
-    ------
-    RuntimeError
-        If .env file is not found or required environment variables are missing
     """
     # Look for .env in current directory
     if not load_dotenv(dotenv_path=".env"):
-        raise RuntimeError(
-            "No .env file found. Please create one with required environment variables."
+        print(
+            "Warning: no .env file found. Falling back to default values for app url and ports"
         )
 
-    app_port = os.environ.get("AMONI_APP_PORT")
-    if not app_port:
-        raise RuntimeError("AMONI_APP_PORT not found in .env file")
-
-    db_port = os.environ.get("AMONI_DB_PORT")
-    if not db_port:
-        raise RuntimeError("AMONI_DB_PORT not found in .env file")
-
-    origin_url = os.environ.get("ORIGIN_URL")
-    if not origin_url:
-        raise RuntimeError("ORIGIN_URL not found in .env file")
+    # Use environment variables if set, otherwise use defaults
+    app_port = os.environ.get("AMONI_APP_PORT", "3030")
+    db_port = os.environ.get("AMONI_DB_PORT", "5432")
+    origin_url = os.environ.get("ORIGIN_URL", f"http://localhost:{app_port}")
 
     return app_port, db_port, origin_url
 
@@ -121,18 +108,41 @@ def pull_image(name: str) -> None:
     ----------
     name
         The name of the image to pull
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
     """
-    docker.compose.pull([name])
+    try:
+        subprocess.run(["docker", "compose", "pull", name], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(["docker-compose", "pull", name], check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to pull image {name}: {e}")
 
 
 def build_image(name: str) -> None:
     """Build a docker image
+
     Parameters
     ----------
     name
-        The name of the image to pull
+        The name of the image to build
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
     """
-    docker.compose.build([name], pull=True)
+    try:
+        subprocess.run(["docker", "compose", "build", "--pull", name], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(["docker-compose", "build", "--pull", name], check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to build image {name}: {e}")
 
 
 def start_service(name: str, detach: bool) -> None:
@@ -144,10 +154,20 @@ def start_service(name: str, detach: bool) -> None:
         The name of the service to start
     detach
         Whether to detach from the service console
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
     """
+    cmd = ["docker", "compose", "up"]
+    if detach:
+        cmd.append("-d")
+    cmd.append(name)
+
     try:
-        docker.compose.up([name], detach=detach)
-    except Exception:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError:
         cmd = ["docker-compose", "up"]
         if detach:
             cmd.append("-d")
@@ -155,14 +175,20 @@ def start_service(name: str, detach: bool) -> None:
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            raise RuntimeError(f"Failed to start service: {e}")
+            raise RuntimeError(f"Failed to start service {name}: {e}")
 
 
 def stop_services() -> None:
-    """Stop all amoni services"""
+    """Stop all amoni services
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
+    """
     try:
-        docker.compose.down()
-    except Exception:
+        subprocess.run(["docker", "compose", "down"], check=True)
+    except subprocess.CalledProcessError:
         try:
             subprocess.run(["docker-compose", "down"], check=True)
         except subprocess.CalledProcessError as e:
@@ -176,8 +202,30 @@ def run_service(name: str, remove: bool = True) -> None:
     ----------
     name
         The name of the service to start
+    remove
+        Whether to remove the container after running
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
     """
-    docker.compose.run(name, remove=remove)
+    cmd = ["docker", "compose", "run"]
+    if remove:
+        cmd.append("--rm")
+    cmd.append(name)
+
+    try:
+        subprocess.run(cmd, check=True)
+    except subprocess.CalledProcessError:
+        cmd = ["docker-compose", "run"]
+        if remove:
+            cmd.append("--rm")
+        cmd.append(name)
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to run service {name}: {e}")
 
 
 class AmoniRemoteCallbacks(pygit2.RemoteCallbacks):
@@ -273,8 +321,23 @@ def build_theme(app: str) -> None:
     ----------
     app
         The name of the app
+
+    Raises
+    ------
+    RuntimeError
+        If both docker compose and docker-compose commands fail
     """
-    docker.compose.run("theme_builder", [app])
+    try:
+        subprocess.run(
+            ["docker", "compose", "run", "--rm", "theme_builder", app], check=True
+        )
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(
+                ["docker-compose", "run", "--rm", "theme_builder", app], check=True
+            )
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"Failed to build theme for {app}: {e}")
 
 
 def add_table(
@@ -284,7 +347,7 @@ def add_table(
     server_permissions: str = "full",
     columns: List = None,
 ):
-    columns = columns if columns is not None else []
+    columns = [] if columns is None else columns
     config = _get_app_config(app)
     table = {
         "title": name,
