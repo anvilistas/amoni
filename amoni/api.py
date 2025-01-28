@@ -387,19 +387,28 @@ def checkout_version(app: str, version: str = None) -> None:
     if not version:
         return
 
-    repo = pygit2.Repository(str(Path("app", app)))
+    app_path = Path("app", app)
 
-    # Try tag first
+    # Use git commands directly for more reliable submodule version management
     try:
-        tag_ref = repo.lookup_reference(f"refs/tags/{version}")
-        repo.checkout(tag_ref)
-        return
-    except KeyError:
-        pass
+        # First fetch all tags and branches
+        subprocess.run(
+            ["git", "fetch", "--tags"],
+            cwd=app_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
 
-    # Try branch
-    try:
-        branch_ref = repo.lookup_reference(f"refs/remotes/origin/{version}")
-        repo.checkout(branch_ref)
-    except KeyError:
-        raise RuntimeError(f"Version '{version}' not found as tag or branch in {app}")
+        # Try to checkout the version
+        subprocess.run(
+            ["git", "checkout", version],
+            cwd=app_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"Failed to checkout version '{version}' in {app}: {e.stderr}"
+        )

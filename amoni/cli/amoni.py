@@ -4,6 +4,7 @@
 # https://github.com/anvilistas/amoni/graphs/contributors
 #
 # This software is published at https://github.com/anvilistas/amoni
+import os
 import time
 from pathlib import Path
 
@@ -116,12 +117,14 @@ def _interactive_setup(directory: Path):
     directory : Path
         The project directory where setup is being performed
     """
+    # Change to project directory
+    os.chdir(directory)
     # Get main app details
     repo_url = typer.prompt("Enter the repository URL for your main app")
     repo_name = typer.prompt("Enter the name for your main app")
 
     # Add main app
-    app.add(repo_url, repo_name)
+    app.add(repo_url, repo_name, as_dependency=False)
 
     # Parse dependencies from main app's anvil.yaml
     app_config = api._get_app_config(repo_name)
@@ -147,32 +150,44 @@ def _interactive_setup(directory: Path):
     env_path = directory / ".env"
     if env_path.exists():
         with open(env_path) as f:
-            env_content = f.read()
+            lines = f.readlines()
 
-        # Replace or add each variable
-        for var, value in [
-            ("AMONI_APP_PORT", app_port),
-            ("AMONI_DB_PORT", db_port),
-            ("ORIGIN_URL", origin_url),
-        ]:
-            # Check if variable exists
-            if f"{var}=" in env_content:
-                # Replace existing value
-                env_content = (
-                    env_content.replace(f"{var}=", f"{var}={value}\n").rstrip() + "\n"
-                )
-            else:
-                # Add new variable
-                env_content += f"{var}={value}\n"
-    else:
-        # Create new .env file if it doesn't exist
-        env_content = f"""AMONI_APP_PORT={app_port}
-AMONI_DB_PORT={db_port}
-ORIGIN_URL={origin_url}
-"""
+        # Create a dictionary of existing variables and their values
+        env_vars = {}
+        for line in lines:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                key, _ = line.split("=", 1)
+                env_vars[key] = True
 
-    with open(env_path, "w") as f:
-        f.write(env_content)
+        # Update or append new values
+        new_content = []
+        for line in lines:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                new_content.append(line)
+            elif "=" in line:
+                key, _ = line.split("=", 1)
+                if key == "AMONI_APP_PORT":
+                    new_content.append(f"AMONI_APP_PORT={app_port}")
+                elif key == "AMONI_DB_PORT":
+                    new_content.append(f"AMONI_DB_PORT={db_port}")
+                elif key == "ORIGIN_URL":
+                    new_content.append(f"ORIGIN_URL={origin_url}")
+                else:
+                    new_content.append(line)
+
+        # Add any missing variables
+        if "AMONI_APP_PORT" not in env_vars:
+            new_content.append(f"AMONI_APP_PORT={app_port}")
+        if "AMONI_DB_PORT" not in env_vars:
+            new_content.append(f"AMONI_DB_PORT={db_port}")
+        if "ORIGIN_URL" not in env_vars:
+            new_content.append(f"ORIGIN_URL={origin_url}")
+
+        # Write back with proper line endings
+        with open(env_path, "w") as f:
+            f.write("\n".join(new_content) + "\n")
 
     # Commit changes
     api._commit_all("Update project configuration")
