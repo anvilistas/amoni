@@ -23,6 +23,10 @@ cmd = typer.Typer()
 @cmd.command()
 def build(app: str = typer.Argument(..., help="App folder name")):
     """Build the theme for the app"""
-    api.build_theme(app)
-    echo.progress(f"Created theme.css in app/{app}/theme/assets")
-    echo.done()
+    try:
+        api.build_theme(app)
+        echo.progress(f"Created theme.css in app/{app}/theme/assets")
+        echo.done()
+    except RuntimeError as e:
+        echo.error(str(e))
+        raise typer.Exit(1)

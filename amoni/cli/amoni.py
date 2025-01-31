@@ -64,7 +64,11 @@ def start(
         api.pull_image("db")
     try:
         # Get configuration before starting services to fail fast if .env is missing
-        current_app_port, current_db_port, origin_url = api.get_ports()
+        current_app_port, current_db_port, origin_url, env_file_found = api.get_ports()
+        if not env_file_found:
+            echo.warn(
+                "No .env file found. Falling back to default values for app url and ports"
+            )
 
         with echo.working("Starting anvil app and database servers"):
             api.start_service("app", detach=True)
