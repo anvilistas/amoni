@@ -13,7 +13,7 @@ dependencies = [
     "cookiecutter",
     "keyring",
     "pygit2",
-    "python-on-whales",
+    "python-dotenv",
     "pyyaml",
     "typer",
 ]
