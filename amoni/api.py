@@ -30,26 +30,28 @@ ANVIL_CONFIG_FILE = Path("app", "config.yaml")
 TABLE_STUB_FILE = Path("anvil-stubs", "tables", "app_tables.pyi")
 
 
-def get_ports() -> Tuple[str, str, str]:
-    """Get the configured ports and origin URL for app and database servers
+def get_ports() -> Tuple[str, str, str, bool]:
+    """Get the configured ports and origin URL for app and database servers.
+    If no .env file is found, falls back to default values:
+    - app_port=3030
+    - db_port=5432
+    - origin_url=http://localhost:3030
 
     Returns
     -------
-    Tuple[str, str, str]
-        A tuple containing (app_port, db_port, origin_url)
+    Tuple[str, str, str, bool]
+        A tuple containing (app_port, db_port, origin_url, env_file_found)
+        where env_file_found indicates if the .env file was loaded successfully
     """
     # Look for .env in current directory
-    if not load_dotenv(dotenv_path=".env"):
-        print(
-            "Warning: no .env file found. Falling back to default values for app url and ports"
-        )
+    env_file_found = load_dotenv(dotenv_path=".env")
 
     # Use environment variables if set, otherwise use defaults
     app_port = os.environ.get("AMONI_APP_PORT", "3030")
     db_port = os.environ.get("AMONI_DB_PORT", "5432")
     origin_url = os.environ.get("ORIGIN_URL", f"http://localhost:{app_port}")
 
-    return app_port, db_port, origin_url
+    return app_port, db_port, origin_url, env_file_found
 
 
 def _commit_all(

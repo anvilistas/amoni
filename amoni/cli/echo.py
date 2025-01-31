@@ -37,6 +37,13 @@ def error(message):
 
 
 def warn(message):
+    """Display a warning message in yellow with a warning emoji
+
+    Parameters
+    ----------
+    message : str
+        The warning message to display
+    """
     typer.secho(_decorate(message, "warn"), fg=typer.colors.YELLOW, err=True)
 
 

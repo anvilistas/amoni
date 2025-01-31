@@ -13,7 +13,15 @@ External Ports (Host Machine):
 * Default port 3030 for accessing the Anvil app (configurable)
 * Default port 5432 for accessing PostgreSQL (configurable)
 
-You can customize these ports using environment variables in a ``.env`` file:
+You can customize these ports using environment variables in a ``.env`` file. If no ``.env`` file is found, amoni will fall back to these default values:
+
+.. code-block:: bash
+
+    AMONI_APP_PORT=3030  # Port for accessing the Anvil app
+    AMONI_DB_PORT=5432   # Port for accessing the PostgreSQL database
+    ORIGIN_URL=http://localhost:3030  # Default localhost URL
+
+A warning message will be displayed when using default values. To set custom values:
 
 .. code-block:: bash
 

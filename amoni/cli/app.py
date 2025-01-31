@@ -32,14 +32,18 @@ def add(
         raise typer.BadParameter(
             "You must specify the app id to add it as a dependency"
         )
-    api.add_submodule(url, Path("app", name), name)
-    echo.progress(f"Added {name} as a submodule in the app directory")
-    if as_dependency:
-        api.set_dependency(id, name)
-    else:
-        api.set_app(name)
-        echo.progress(f"Updated config to set {name} as the app")
-        generated_stubs = api.generate_table_stubs(name)
-        if generated_stubs:
-            echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
-    echo.done()
+    try:
+        api.add_submodule(url, Path("app", name), name)
+        echo.progress(f"Added {name} as a submodule in the app directory")
+        if as_dependency:
+            api.set_dependency(id, name)
+        else:
+            api.set_app(name)
+            echo.progress(f"Updated config to set {name} as the app")
+            generated_stubs = api.generate_table_stubs(name)
+            if generated_stubs:
+                echo.progress(f"Created table definitions in {api.TABLE_STUB_FILE}")
+        echo.done()
+    except RuntimeError as e:
+        echo.error(str(e))
+        raise typer.Exit(1)
