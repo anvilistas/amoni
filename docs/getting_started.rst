@@ -8,10 +8,33 @@ project and run:
 
 .. code-block:: shell
 
-   amoni init demo
+   amoni init demo [--interactive]
 
 Amoni will now create a new directory named demo and set up the necessary
 files and directories within it.
+
+Interactive Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you use the ``--interactive`` (or ``-i``) flag, amoni will guide you through the setup process:
+
+1. Configure your main app:
+
+   * Enter the repository URL for your main app
+   * Specify a name for the app
+
+2. Configure dependencies:
+
+   * For each dependency in your main app's anvil.yaml
+   * Enter the repository URL for the dependency
+   * The version will be automatically set based on your main app's configuration
+
+3. Configure server settings:
+
+   * Set the app server port (default: 3030)
+   * Set the database port (default: 5432)
+   * Set the origin URL (default: http://localhost:<app_port>)
+
+All these settings will be saved in your project's configuration files.
 
 Start Your Servers
 ------------------
