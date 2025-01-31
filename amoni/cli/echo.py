@@ -16,7 +16,7 @@ __version__ = "0.0.13"
 CLEAR_LINE = "\r\033[K"
 EMOJI_ANIMATION = {"frames": ("⣷", "⣯", "⣟", "⡿", "⢿", "⣻", "⣽", "⣾"), "interval": 0.1}
 ASCII_ANIMATION = {"frames": ("   ", ".  ", ".. ", "..."), "interval": 0.5}
-DECORATIONS = {"error": "⛔", "done": "✨️"}
+DECORATIONS = {"error": "⛔", "done": "✨️", "warn": "⚠️"}
 
 
 def _emojis_work():
@@ -34,6 +34,10 @@ def _decorate(message, decoration):
 
 def error(message):
     typer.secho(_decorate(message, "error"), fg=typer.colors.RED, err=True)
+
+
+def warn(message):
+    typer.secho(_decorate(message, "warn"), fg=typer.colors.YELLOW, err=True)
 
 
 def done():
