@@ -44,17 +44,14 @@ def add(
             api.set_dependency(id, name)
 
         if set_version:
-            # Get main app name from config
             anvil_config = api.load(api.ANVIL_CONFIG_FILE.open(), Loader=api.Loader)
             main_app = Path(anvil_config["app"]).name
             echo.progress(f"Main app: {main_app}")
 
-            # Get main app's anvil.yaml
             app_config = api._get_app_config(main_app)
             deps = app_config.get("dependencies", [])
             echo.progress(f"Found {len(deps)} dependencies")
 
-            # Find this dependency's version info
             for dep in deps:
                 echo.progress(f"Checking dep {dep['dep_id']}")
                 if dep["dep_id"] == id:
