@@ -144,7 +144,7 @@ def _interactive_setup(directory: Path):
         "Enter origin URL", default=f"http://localhost:{app_port}"
     )
 
-    env_path = directory / ".env"
+    env_path = Path(directory, ".env")
     load_dotenv(env_path)
 
     set_key(env_path, "AMONI_APP_PORT", app_port)
