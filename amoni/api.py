@@ -43,10 +43,8 @@ def get_ports() -> Tuple[str, str, str, bool]:
         A tuple containing (app_port, db_port, origin_url, env_file_found)
         where env_file_found indicates if the .env file was loaded successfully
     """
-    # Look for .env in current directory
     env_file_found = load_dotenv(dotenv_path=".env")
 
-    # Use environment variables if set, otherwise use defaults
     app_port = os.environ.get("AMONI_APP_PORT", "3030")
     db_port = os.environ.get("AMONI_DB_PORT", "5432")
     origin_url = os.environ.get("ORIGIN_URL", f"http://localhost:{app_port}")
@@ -373,3 +371,41 @@ def add_column(app: str, table: str, name: str, data_type: str, target: str = No
     config["db_schema"][table]["columns"].append(column)
     _save_app_config(app, config)
     _commit_all(f"Add {name} column to {table} data table")
+
+
+def checkout_version(app: str, version: str = None) -> None:
+    """Checkout a specific version (tag or branch) of a submodule
+
+    Parameters
+    ----------
+    app : str
+        The name of the app (submodule)
+    version : str, optional
+        The version (tag or branch) to checkout. If not provided,
+        stays on default branch.
+    """
+    if not version:
+        return
+
+    app_path = Path("app", app)
+
+    try:
+        subprocess.run(
+            ["git", "fetch", "--tags"],
+            cwd=app_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        subprocess.run(
+            ["git", "checkout", version],
+            cwd=app_path,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            f"Failed to checkout version '{version}' in {app}: {e.stderr}"
+        )
