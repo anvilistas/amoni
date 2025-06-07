@@ -10,6 +10,7 @@ from pathlib import Path
 
 import typer
 from cookiecutter.exceptions import OutputDirExistsException
+from dotenv import load_dotenv, set_key
 
 from .. import api
 from . import app, echo, theme
@@ -63,11 +64,12 @@ def start(
         api.build_image("app")
         api.pull_image("db")
     try:
-        # Copy requirements.txt from main app
         api.copy_main_app_requirements()
-
-        # Get configuration before starting services to fail fast if .env is missing
-        current_app_port, current_db_port, origin_url = api.get_ports()
+        current_app_port, current_db_port, origin_url, env_file_found = api.get_ports()
+        if not env_file_found:
+            echo.warn(
+                "No .env file found. Falling back to default values for app url and ports"
+            )
 
         with echo.working("Starting anvil app and database servers"):
             api.start_service("app", detach=True)
@@ -78,7 +80,7 @@ def start(
         )
         if launch:
             echo.progress("Waiting for services to be ready...")
-            time.sleep(2)  # Wait for 2 seconds before launching browser
+            time.sleep(2)
             try:
                 typer.launch(origin_url)
             except Exception:
@@ -120,20 +122,15 @@ def _interactive_setup(directory: Path):
     directory : Path
         The project directory where setup is being performed
     """
-    # Change to project directory
     os.chdir(directory)
-    # Get main app details
     repo_url = typer.prompt("Enter the repository URL for your main app")
     repo_name = typer.prompt("Enter the name for your main app")
 
-    # Add main app
     app.add(repo_url, repo_name, as_dependency=False)
 
-    # Parse dependencies from main app's anvil.yaml
     app_config = api._get_app_config(repo_name)
     deps = app_config.get("dependencies", [])
 
-    # Get dependency details
     for dep in deps:
         dep_id = dep["dep_id"]
         package_name = dep["resolution_hints"]["package_name"]
@@ -142,7 +139,6 @@ def _interactive_setup(directory: Path):
         )
         app.add(dep_url, package_name, id=dep_id, as_dependency=True, set_version=True)
 
-    # Configure ports and URL
     app_port = typer.prompt("Enter port number for the app server", default="3030")
     db_port = typer.prompt("Enter port number for the database", default="5432")
     origin_url = typer.prompt(
