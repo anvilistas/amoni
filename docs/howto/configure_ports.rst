@@ -1,5 +1,5 @@
 Configure Ports and Origin URL
-=============================
+==============================
 
 Amoni uses a two-port system:
 
@@ -24,7 +24,7 @@ You can customize these ports using environment variables in a ``.env`` file. If
 A warning message will be displayed when using default values.
 
 Setting Environment Variables
----------------------------
+-----------------------------
 
 You can set environment variables using the ``amoni env`` command:
 
@@ -61,7 +61,7 @@ Alternatively, you can manually manage the ``.env`` file:
    Note: If you don't set these variables, the default ports will be used.
 
 Port and Origin Configuration Details
-----------------------------------
+-------------------------------------
 
 AMONI_APP_PORT
 ^^^^^^^^^^^^^^
@@ -82,7 +82,7 @@ AMONI_DB_PORT
   * Avoid conflicts with existing PostgreSQL installations
 
 Origin URL Configuration
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^
 * Controls the public URL where your app will be accessible
 * Default: ``http://localhost:${AMONI_APP_PORT}``
 * Examples:
@@ -97,7 +97,7 @@ Origin URL Configuration
   * Testing with different ports
 
 Using with Cloudflare Tunnels
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 When using Cloudflare Tunnels to expose your app to the internet:
 
 1. Set ``disable-tls: true`` in your ``config.yaml``:
@@ -119,7 +119,7 @@ This configuration works because:
 * The app server doesn't need to handle HTTPS directly
 
 Best Practices
--------------
+--------------
 
 1. Never commit your ``.env`` file to version control
 2. Always use ``env.template`` as a template

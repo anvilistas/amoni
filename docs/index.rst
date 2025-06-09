@@ -48,6 +48,7 @@ So your workflow becomes:
    getting_started.rst
    howto/index.rst
    reference/index.rst
+   contributing.rst
 
 Why the Name?
 -------------

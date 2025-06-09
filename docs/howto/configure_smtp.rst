@@ -1,10 +1,10 @@
 Configure SMTP Settings
-====================
+=======================
 
 This guide explains how to configure SMTP settings for your Anvil app's email functionality.
 
 Interactive Setup
----------------
+-----------------
 The easiest way to configure SMTP is during project initialization:
 
 .. code-block:: shell
@@ -20,7 +20,7 @@ During the interactive setup, you'll be prompted for:
 * SMTP encryption method (default: starttls)
 
 Manual Configuration
------------------
+--------------------
 You can manually configure SMTP settings using the ``amoni config`` command:
 
 .. code-block:: shell

@@ -1,10 +1,10 @@
 Docker Requirements Management
-========================
+==============================
 
 This guide explains how amoni manages Python requirements for your Docker containers.
 
 Automatic Requirements Copying
----------------------------
+------------------------------
 When you run ``amoni start``, the system automatically:
 
 1. Checks for a ``requirements.txt`` file in your app's ``server_code`` directory

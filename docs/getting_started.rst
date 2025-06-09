@@ -99,7 +99,7 @@ When you are finished, you can stop your anvil and database servers using:
    amoni stop
 
 Configuration Management
-----------------------
+------------------------
 After initial setup, you can manage your configuration using these commands:
 
 Set environment variables:

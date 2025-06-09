@@ -1,11 +1,11 @@
 Configure Secrets and Encryption Keys
-================================
+=====================================
 
 This guide explains how to configure and manage app secrets and sensitive values
 in your project.
 
 Understanding Secrets and Encryption Keys
----------------------------------------
+-----------------------------------------
 Your Anvil app may use two types of sensitive values:
 
 1. **Secrets**: Regular sensitive values like API keys or passwords
@@ -15,7 +15,7 @@ These values are defined in your app's ``anvil.yaml`` file and stored in your pr
 ``config.yaml`` file.
 
 Automatic Configuration
----------------------
+-----------------------
 When you run ``amoni init`` with the ``--interactive`` flag or set up a new app, amoni
 automatically:
 
@@ -32,7 +32,7 @@ automatically:
    * Preserves existing keys if already configured
 
 Manual Configuration
-------------------
+--------------------
 You can manually configure secrets and encryption keys using the ``amoni config`` command:
 
 For regular secrets:
@@ -54,7 +54,7 @@ For encryption keys:
    you need to provide correctly formatted keys.
 
 Best Practices
-------------
+--------------
 
    * Never commit real secrets or encryption keys to version control
    * Let amoni generate encryption keys when possible
