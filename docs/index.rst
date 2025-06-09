@@ -14,15 +14,20 @@ Amoni gives you:
 * Your database server available on port 5432 on your local machine
 * Commands to fetch an app from a remote repository and add it to your project either as the main app or as a dependency
 * Stub files so that your autocompleter can see the tables available in your app
+* Automatic configuration of secrets and encryption keys from your anvil.yaml
+* Built-in SMTP configuration for email functionality
+* Environment variable management with the env command
+* Automatic copying of requirements.txt from your app's server code
 
 So your workflow becomes:
 
 .. code-block:: shell
 
-   amoni init
+   amoni init --interactive
    cd <my_new_amoni_project_directory>
    amoni start
 
+   >>> Configure your app settings interactively
    >>> Wait a while the first time while the server images download
    >>> Point my browser at http://localhost:3030
    >>> Marvel at how simple that was

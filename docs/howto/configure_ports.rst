@@ -21,16 +21,26 @@ You can customize these ports using environment variables in a ``.env`` file. If
     AMONI_DB_PORT=5432   # Port for accessing the PostgreSQL database
     ORIGIN_URL=http://localhost:3030  # Default localhost URL
 
-A warning message will be displayed when using default values. To set custom values:
+A warning message will be displayed when using default values.
+
+Setting Environment Variables
+---------------------------
+
+You can set environment variables using the ``amoni env`` command:
 
 .. code-block:: bash
 
-    # .env file
-    AMONI_APP_PORT=8080   # Custom port for the Anvil app
-    AMONI_DB_PORT=5433    # Custom port for the database
+    amoni env AMONI_APP_PORT 8080
+    amoni env AMONI_DB_PORT 5433
+    amoni env ORIGIN_URL http://localhost:8080
 
-Creating a .env File
--------------------
+This command will:
+
+* Create the ``.env`` file if it doesn't exist
+* Update existing variables or add new ones
+* Maintain proper formatting and comments
+
+Alternatively, you can manually manage the ``.env`` file:
 
 1. Copy the environment template file:
 
@@ -96,11 +106,11 @@ When using Cloudflare Tunnels to expose your app to the internet:
 
        disable-tls: true  # Required for Cloudflare Tunnel
 
-2. Set your ORIGIN_URL to your Cloudflare domain:
+2. Set your ORIGIN_URL using the env command:
 
    .. code-block:: bash
 
-       ORIGIN_URL=https://myapp.example.com
+       amoni env ORIGIN_URL https://myapp.example.com
 
 This configuration works because:
 
