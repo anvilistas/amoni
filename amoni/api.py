@@ -269,9 +269,7 @@ def _generate_encryption_key() -> str:
     str
         A base64-encoded 16-byte (128-bit) key
     """
-    # Generate 16 random bytes (128 bits) for AES-128
     key_bytes = secrets.token_bytes(16)
-    # Encode as base64
     return base64.b64encode(key_bytes).decode("utf-8")
 
 
@@ -293,22 +291,27 @@ def _process_secrets(app_config: Dict, anvil_config: Dict) -> Dict:
     if "secrets" not in app_config:
         return anvil_config
 
-    for secret_name, secret_info in app_config["secrets"].items():
-        secret_type = secret_info.get("type")
-        if secret_type == "secret":
-            # Handle regular secrets
-            if "secret" not in anvil_config:
-                anvil_config["secret"] = {}
-            # Only add if secret doesn't exist
-            if secret_name not in anvil_config["secret"]:
-                anvil_config["secret"][secret_name] = "[PLACEHOLDER]"
-        elif secret_type == "key":
-            # Handle encryption keys
-            if "encryption-key" not in anvil_config:
-                anvil_config["encryption-key"] = {}
-            # Only generate new key if it doesn't exist
-            if secret_name not in anvil_config["encryption-key"]:
-                anvil_config["encryption-key"][secret_name] = _generate_encryption_key()
+    anvil_config.setdefault("secret", {})
+    anvil_config.setdefault("encryption-key", {})
+    # TODO: test if dumping empty dict is bad for config.yaml
+
+    secrets = app_config["secrets"]
+
+    anvil_config["secret"].update(
+        {
+            name: "[PLACEHOLDER]"
+            for name, info in secrets.items()
+            if info.get("type") == "secret" and name not in anvil_config["secret"]
+        }
+    )
+
+    anvil_config["encryption-key"].update(
+        {
+            name: _generate_encryption_key()
+            for name, info in secrets.items()
+            if info.get("type") == "key" and name not in anvil_config["encryption-key"]
+        }
+    )
 
     return anvil_config
 
@@ -435,15 +438,12 @@ def add_column(app: str, table: str, name: str, data_type: str, target: str = No
 
 def copy_main_app_requirements() -> None:
     """Copy requirements.txt from main app's server_code to app folder if it exists"""
-    # Get main app name from config using consistent pattern
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
     main_app = Path(anvil_config["app"]).name
 
-    # Use Path objects consistently
     src = Path("app", main_app, "server_code", "requirements.txt")
     dst = Path("app", "requirements.txt")
 
-    # Only copy if source exists, overwriting destination if it exists
     if src.exists():
         shutil.copy2(src, dst)
 
@@ -462,15 +462,14 @@ def set_config(key: str, value: str, parent_key: str = None) -> None:
     """
     anvil_config = load(ANVIL_CONFIG_FILE.open(), Loader=Loader)
 
-    # Let YAML handle the value type naturally
+    loaded_value = load(f"{value}", Loader=Loader)
     if parent_key:
-        # Handle collection config (like secrets)
-        if parent_key not in anvil_config:
-            anvil_config[parent_key] = {}
-        anvil_config[parent_key][key] = load(f"{value}", Loader=Loader)
+        # anvil_config.setdefault(parent_key, {})
+        # anvil_config[parent_key][key] = loaded_value
+        anvil_config.setdefault(parent_key, {})[key] = loaded_value
+        # TODO: test that this writes properly
     else:
-        # Handle single value config
-        anvil_config[key] = load(f"{value}", Loader=Loader)
+        anvil_config[key] = loaded_value
 
     dump(anvil_config, ANVIL_CONFIG_FILE.open("w"), Dumper=Dumper)
     _commit_all(f"Update config: {parent_key + '.' if parent_key else ''}{key}")

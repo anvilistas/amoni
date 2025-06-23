@@ -30,7 +30,7 @@ def main():
 @cmd.command()
 def init(
     directory: Path = typer.Argument(
-        ..., file_okay=False, resolve_path=True, help="Directory to initialiase"
+        ..., file_okay=False, resolve_path=True, help="Directory to initialize"
     ),
     app: str = typer.Argument("hello_world", help="App Folder Name"),
     interactive: bool = typer.Option(
@@ -151,7 +151,6 @@ def _interactive_setup(directory: Path):
     env(key="ORIGIN_URL", value=origin_url)
     echo.progress("Environment variables configured")
 
-    # Load existing config to check for secrets and encryption keys
     try:
         anvil_config = api.load(api.ANVIL_CONFIG_FILE.open(), Loader=api.Loader)
         existing_secrets = anvil_config.get("secret", {})
@@ -160,21 +159,20 @@ def _interactive_setup(directory: Path):
         existing_secrets = {}
         existing_encryption_keys = {}
 
-    # App Secrets Configuration
     if typer.confirm(
         "Would you like to configure app secrets and encryption keys?", default=True
     ):
-        # Handle regular secrets
-        if existing_secrets:
-            echo.progress("Current secrets found in config.yaml")
-            for secret_name, current_value in existing_secrets.items():
-                new_value = typer.prompt(
-                    f"Enter value for '{secret_name}' (press Enter to keep current: {current_value})",
-                    default="",
-                    show_default=False,
-                )
-                if new_value:  # Only update if a value was entered
-                    api.set_config(secret_name, new_value, "secret")
+        updated_secrets = {}
+        for secret_name, current_value in existing_secrets.items():
+            updated_secrets[secret_name] = typer.prompt(
+                f"Enter value for '{secret_name}' (press Enter to keep current: {current_value})",
+                default="",
+                show_default=False,
+            )
+        [
+            api.set_config(name, value, "secret")
+            for name, value in updated_secrets.items()
+        ]
 
         # Handle encryption keys
         if existing_encryption_keys:
@@ -188,7 +186,6 @@ def _interactive_setup(directory: Path):
                 if new_value:  # Only update if a value was entered
                     api.set_config(key_name, new_value, "encryption-key")
 
-    # SMTP Configuration
     if typer.confirm("Would you like to configure SMTP settings?", default=True):
         smtp_host = typer.prompt("Enter SMTP host (e.g., smtp.gmail.com)")
         smtp_username = typer.prompt("Enter SMTP username")
@@ -196,7 +193,6 @@ def _interactive_setup(directory: Path):
         smtp_port = typer.prompt("Enter SMTP port", default="587")
         smtp_encryption = typer.prompt("Enter SMTP encryption", default="starttls")
 
-        # Set SMTP config
         api.set_config("smtp-host", smtp_host)
         api.set_config("smtp-username", smtp_username)
         api.set_config("smtp-password", smtp_password)
@@ -204,7 +200,6 @@ def _interactive_setup(directory: Path):
         api.set_config("smtp-encryption", smtp_encryption)
         echo.progress("SMTP configuration updated")
 
-    # Commit changes
     api._commit_all("Update project configuration")
 
     echo.progress("Interactive setup completed successfully")
