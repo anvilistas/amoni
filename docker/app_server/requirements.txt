@@ -1,1 +1,1 @@
-anvil-app-server==1.13.4
+anvil-app-server==1.15.0
